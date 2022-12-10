@@ -74,6 +74,7 @@ func main() {
 	match := flag.Arg(0)
 	total := 0
 	var dur time.Duration = 0
+	errors := []error{}
 	for i, scenario := range scenarios {
 		fmt.Printf("\033[1;34m[%03d] %s\033[0m\n", i+1, scenario.Name)
 		if match != "" && !strings.Contains(scenario.Name, match) {
@@ -82,16 +83,20 @@ func main() {
 		}
 		begin := time.Now()
 		res, err := scenario.Run()
-		if err != nil {
-			fmt.Printf("\033[31mError:\033[0m %v\n", err)
-		} else {
-			fmt.Printf("%+v\n", res)
-		}
 		elapsed := time.Since(begin)
-		fmt.Printf("\033[32mTime:\033[0m %v\n\n", elapsed)
+		if err != nil {
+			fmt.Printf("\033[31mError:\033[0m %v\nTime: ", err)
+			errors = append(errors, err)
+		} else {
+			fmt.Printf("%+v\n\033[32mTime:\033[0m ", res)
+		}
+		fmt.Printf("%v\n\n", elapsed)
 		dur += elapsed
 		total++
 	}
 	fmt.Println("===============================================")
 	fmt.Printf("Total %d scenario executed in %v.\n", total, dur)
+	if len(errors) > 0 {
+		os.Exit(1)
+	}
 }
