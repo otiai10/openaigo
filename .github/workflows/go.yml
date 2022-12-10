@@ -29,7 +29,7 @@ jobs:
       run: go test -v --tags=go${{ matrix.go }}
   coverage:
     name: Coverage
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
     steps:
     - name: Set up Go
       uses: actions/setup-go@v3
