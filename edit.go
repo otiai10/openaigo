@@ -4,7 +4,7 @@ type EditRequestBody struct {
 	Model       string  `json:"model"`
 	Instruction string  `json:"instruction"`
 	Input       string  `json:"input,omitempty"`
-	N           int     `json:"n,omitempty"` // FIXME: If 0 given, omitted.
+	N           int     `json:"n,omitempty"`
 	Temperature float32 `json:"temperature,omitempty"`
 	TopP        float32 `json:"top_p,omitempty"`
 }

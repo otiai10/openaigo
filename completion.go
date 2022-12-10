@@ -37,7 +37,7 @@ type CompletionRequestBody struct {
 	// Note: Because this parameter generates many completions, it can quickly consume your token quota.
 	// Use carefully and ensure that you have reasonable settings for max_tokens and stop.
 	// See https://beta.openai.com/docs/api-reference/completions/create#completions/create-n
-	N int `json:"n,omitempty"` // FIXME: If 0 given, omitted.
+	N int `json:"n,omitempty"`
 
 	// Stream: Whether to stream back partial progress.
 	// If set, tokens will be sent as data-only server-sent events as they become available,

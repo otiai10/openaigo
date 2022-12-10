@@ -13,8 +13,8 @@ type ErrorResponseBody struct {
 type ErrorEntry struct {
 	Message string      `json:"message"`
 	Type    string      `json:"type"`
-	Param   interface{} `json:"param"` // FIXME: typing
-	Code    interface{} `json:"code"`  // FIXME: typing
+	Param   interface{} `json:"param"` // TODO: typing
+	Code    interface{} `json:"code"`  // TODO: typing
 }
 
 func (err ErrorEntry) Error() string {

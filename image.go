@@ -15,7 +15,7 @@ const (
 
 type ImageGenerationRequestBody struct {
 	Prompt         string `json:"prompt"`
-	N              int    `json:"n,omitempty"` // FIXME: If 0 given, omitted.
+	N              int    `json:"n,omitempty"`
 	Size           string `json:"size,omitempty"`
 	ResponseFormat string `json:"response_format,omitempty"`
 	User           string `json:"user,omitempty"`
