@@ -24,6 +24,9 @@ type Client struct {
 	// e.g., https://api.openai.com/v1
 	BaseURL string
 
+	// Organization
+	Organization string
+
 	// HTTPClient (optional) to proxy HTTP request.
 	// If nil, *http.DefaultClient will be used.
 	HTTPClient *http.Client
@@ -32,6 +35,7 @@ type Client struct {
 func NewClient(apikey string) *Client {
 	return &Client{
 		APIKey: apikey,
+		// Organization: org-GXjGDRs5UuJ4CvQ2u9d5uy0k
 		// BaseURL: DefaultOpenAIAPIURL,
 		// HTTPClient: http.DefaultClient,
 	}
@@ -67,6 +71,9 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	}
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
+	if client.Organization != "" {
+		req.Header.Add("OpenAI-Organization", client.Organization)
+	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
 	}
