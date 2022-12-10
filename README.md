@@ -53,11 +53,11 @@ OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
 - Embeddings
   - [x] [Create embeddings](https://beta.openai.com/docs/api-reference/embeddings/create)
 - Files
-  - [ ] [List files](https://beta.openai.com/docs/api-reference/files/list)
-  - [ ] [Upload file](https://beta.openai.com/docs/api-reference/files/upload)
-  - [ ] [Delete file](https://beta.openai.com/docs/api-reference/files/delete)
-  - [ ] [Retrieve file](https://beta.openai.com/docs/api-reference/files/retrieve)
-  - [ ] [Retrieve file content](https://beta.openai.com/docs/api-reference/files/retrieve-content)
+  - [x] [List files](https://beta.openai.com/docs/api-reference/files/list)
+  - [x] [Upload file](https://beta.openai.com/docs/api-reference/files/upload)
+  - [x] [Delete file](https://beta.openai.com/docs/api-reference/files/delete)
+  - [x] [Retrieve file](https://beta.openai.com/docs/api-reference/files/retrieve)
+  - [x] [Retrieve file content](https://beta.openai.com/docs/api-reference/files/retrieve-content)
 - Fine-tunes
   - [ ] [Create fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/create)
   - [ ] [List fine-tunes (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/list)
@@ -66,7 +66,7 @@ OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
   - [ ] [List fine-tune events (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/events)
   - [ ] [Delete fine-tune model (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/delete-model)
 - Moderation
-  - [ ] [Create moderation](https://beta.openai.com/docs/api-reference/moderations/create)
+  - [x] [Create moderation](https://beta.openai.com/docs/api-reference/moderations/create)
 - ~~Engines~~ *(deprecated)*
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
