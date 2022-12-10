@@ -28,6 +28,14 @@ func main() {
 }
 ```
 
+if you just want to try, hit commands below.
+
+```shell
+git clone git@github.com:otiai10/openaigo.git
+cd openaigo
+OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
+```
+
 # Endpoint Support
 
 - Models

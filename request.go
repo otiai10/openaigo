@@ -3,5 +3,5 @@ package openaigo
 import "bytes"
 
 type MultipartFormDataRequestBody interface {
-	ToMultipartFormData() (*bytes.Buffer, error)
+	ToMultipartFormData() (*bytes.Buffer, string, error)
 }

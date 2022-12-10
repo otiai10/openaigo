@@ -57,7 +57,7 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	if err != nil {
 		return nil, err
 	}
-	r, err := client.bodyToReader(body)
+	r, contenttype, err := client.bodyToReader(body)
 	if err != nil {
 		return nil, err
 	}
@@ -65,11 +65,7 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	if err != nil {
 		return nil, err
 	}
-	if _, ok := body.(io.Reader); ok {
-		req.Header.Add("Content-Type", "multipart/form-data")
-	} else {
-		req.Header.Add("Content-Type", "application/json")
-	}
+	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -77,27 +73,27 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	return req, nil
 }
 
-func (client *Client) bodyToReader(body interface{}) (io.Reader, error) {
+func (client *Client) bodyToReader(body interface{}) (io.Reader, string, error) {
 	var r io.Reader
 	switch v := body.(type) {
 	case io.Reader:
 		r = v
 	case nil:
 		r = nil
-	case MultipartFormDataRequestBody:
-		buf, err := v.ToMultipartFormData()
+	case MultipartFormDataRequestBody: // TODO: Refactor
+		buf, ct, err := v.ToMultipartFormData()
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
-		r = buf
+		return buf, ct, nil
 	default:
 		b, err := json.Marshal(body)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 		r = bytes.NewBuffer(b)
 	}
-	return r, nil
+	return r, "application/json", nil
 }
 
 func (client *Client) execute(req *http.Request, response interface{}) error {

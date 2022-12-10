@@ -18,7 +18,7 @@ type ErrorEntry struct {
 }
 
 func (err ErrorEntry) Error() string {
-	return fmt.Sprintf("%v: %v, %v (%v)", err.Type, err.Message, err.Param, err.Code)
+	return fmt.Sprintf("%v: %v (param: %v, code: %v)", err.Type, err.Message, err.Param, err.Code)
 }
 
 func (client *Client) apiError(res *http.Response) error {
