@@ -1,5 +1,8 @@
 # openaigo
 
+[![Go](https://github.com/otiai10/openaigo/actions/workflows/go.yml/badge.svg)](https://github.com/otiai10/openaigo/actions/workflows/go.yml)
+[![CodeQL](https://github.com/otiai10/openaigo/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/otiai10/openaigo/actions/workflows/codeql-analysis.yml)
+
 Yet another API client for `api.openai.com`.
 
 This library is community-maintained, NOT officially supported by OpenAI.
