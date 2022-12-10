@@ -59,12 +59,12 @@ OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
   - [x] [Retrieve file](https://beta.openai.com/docs/api-reference/files/retrieve)
   - [x] [Retrieve file content](https://beta.openai.com/docs/api-reference/files/retrieve-content)
 - Fine-tunes
-  - [ ] [Create fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/create)
-  - [ ] [List fine-tunes (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/list)
-  - [ ] [Retrieve fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/retrieve)
-  - [ ] [Cance fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/cancel)
-  - [ ] [List fine-tune events (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/events)
-  - [ ] [Delete fine-tune model (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/delete-model)
+  - [x] [Create fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/create)
+  - [x] [List fine-tunes (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/list)
+  - [x] [Retrieve fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/retrieve)
+  - [x] [Cancel fine-tune (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/cancel)
+  - [x] [List fine-tune events (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/events)
+  - [x] [Delete fine-tune model (beta)](https://beta.openai.com/docs/api-reference/fine-tunes/delete-model)
 - Moderation
   - [x] [Create moderation](https://beta.openai.com/docs/api-reference/moderations/create)
 - ~~Engines~~ *(deprecated)*
