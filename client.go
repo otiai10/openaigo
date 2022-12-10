@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
+
 // Client for api.openai.com API endpoints.
 type Client struct {
 
@@ -27,7 +29,18 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
+func NewClient(apikey string) *Client {
+	return &Client{
+		APIKey: apikey,
+		// BaseURL: DefaultOpenAIAPIURL,
+		// HTTPClient: http.DefaultClient,
+	}
+}
+
 func (client *Client) endpoint(p string) (string, error) {
+	if client.BaseURL == "" {
+		client.BaseURL = DefaultOpenAIAPIURL
+	}
 	u, err := url.Parse(client.BaseURL)
 	if err != nil {
 		return "", err
