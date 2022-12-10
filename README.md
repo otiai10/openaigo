@@ -7,7 +7,28 @@ Yet another API client for `api.openai.com`.
 
 This library is community-maintained, NOT officially supported by OpenAI.
 
-# Endpoint support
+# Usage Example
+
+```go
+package main
+
+import (
+  "fmt"
+  "github.com/otiai10/openaigo"
+)
+
+func main() {
+  client := openaigo.NewClient(os.Getenv("OPENAI_APIKEY"))
+  request := openaigo.CompletionRequestBody{
+    Model:  "text-davinci-003",
+    Prompt: []string{"Say this is a test"},
+  }
+  response, err := client.Completion(nil, request)
+  fmt.Println(response, err)
+}
+```
+
+# Endpoint Support
 
 - Models
   - [x] [List models](https://beta.openai.com/docs/api-reference/models/list)
