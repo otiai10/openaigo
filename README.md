@@ -42,7 +42,7 @@ func main() {
   - [x] [Create image edit](https://beta.openai.com/docs/api-reference/images/create-edit)
   - [x] [Create image variation](https://beta.openai.com/docs/api-reference/images/create-variation)
 - Embeddings
-  - [ ] [Create embeddings](https://beta.openai.com/docs/api-reference/embeddings/create)
+  - [x] [Create embeddings](https://beta.openai.com/docs/api-reference/embeddings/create)
 - Files
   - [ ] [List files](https://beta.openai.com/docs/api-reference/files/list)
   - [ ] [Upload file](https://beta.openai.com/docs/api-reference/files/upload)

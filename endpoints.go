@@ -58,3 +58,11 @@ func (client *Client) CreateImageVariation(ctx context.Context, body ImageVariat
 	p := "/images/variations"
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }
+
+// CreateEmbedding: POST https://api.openai.com/v1/embeddings
+// Creates an embedding vector representing the input text.
+// See https://beta.openai.com/docs/api-reference/embeddings/create
+func (client *Client) CreateEmbedding(ctx context.Context, body EmbeddingCreateRequestBody) (resp EmbeddingCreateResponse, err error) {
+	p := "/embeddings"
+	return call(ctx, client, http.MethodPost, p, body, resp)
+}
