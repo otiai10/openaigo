@@ -1,6 +1,7 @@
 package openaigo
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -29,10 +30,13 @@ func TestClient_ListFiles(t *testing.T) {
 func TestClient_RetrieveFileContent(t *testing.T) {
 	client := NewClient("")
 	client.BaseURL = mockserver.URL
-	res, err := client.RetrieveFileContent(nil, "abcdefg")
+	res, err := client.RetrieveFileContent(context.TODO(), "abcdefg")
 	Expect(t, err).ToBe(nil)
 	Expect(t, res).TypeOf("*http.bodyEOFSignal")
 	res.Close()
+
+	_, err = client.RetrieveFileContent(context.TODO(), "notfound")
+	Expect(t, err).Not().ToBe(nil)
 }
 
 func TestClient_RetrieveFile(t *testing.T) {
