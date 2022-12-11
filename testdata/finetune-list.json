@@ -1,0 +1,24 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "ft-AF1WoRqd3aJAHsqc9NY7iL8F",
+      "object": "fine-tune",
+      "model": "curie",
+      "created_at": 1614807352,
+      "fine_tuned_model": null,
+      "hyperparams": {
+        "batch_size": 4,
+        "learning_rate_multiplier": 0.1,
+        "n_epochs": 4,
+        "prompt_loss_weight": 0.1
+      },
+      "organization_id": "org-...",
+      "result_files": [],
+      "status": "pending",
+      "validation_files": [],
+      "training_files": [],
+      "updated_at": 1614807352
+    }
+  ]
+}

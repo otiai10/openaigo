@@ -210,6 +210,61 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
-
+	mux.HandleFunc("/fine-tunes", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetune-list.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		case http.MethodPost:
+			f, err := os.Open("./testdata/finetune-create.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine-tunes/abcdefghi", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetune-retrieve.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine-tunes/abcdefghi/cancel", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, err := os.Open("./testdata/finetune-retrieve.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine-tunes/abcdefghi/events", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetune-events-list.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
 	return httptest.NewServer(mux)
 }
