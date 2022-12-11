@@ -175,6 +175,41 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/embeddings", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			json.NewEncoder(w).Encode(map[string]any{
+				"object": "list",
+				"data": []any{
+					map[string]any{
+						"object": "embedding",
+						"embedding": []float32{
+							0.018990106880664825,
+							-0.0073809814639389515,
+							0.021276434883475304,
+						},
+						"index": 0,
+					},
+				},
+				"usage": map[string]any{
+					"prompt_tokens": 8,
+					"total_tokens":  8,
+				},
+			})
+		}
+	})
+	mux.HandleFunc("/moderations", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, err := os.Open("./testdata/moderation-create.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
 
 	return httptest.NewServer(mux)
 }
