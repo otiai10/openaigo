@@ -68,14 +68,17 @@ type ImageEditRequestBody struct {
 }
 
 func (body ImageEditRequestBody) ToMultipartFormData() (buf *bytes.Buffer, contenttype string, err error) {
+	if body.Image == nil {
+		return nil, "", fmt.Errorf("body.Image must not be nil")
+	}
 	buf = bytes.NewBuffer(nil)
 	w := multipart.NewWriter(buf)
 	imgw, err := w.CreateFormFile("image", "image.png")
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to create FormFile: %v", err)
 	}
 	if _, err := io.Copy(imgw, body.Image); err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to copy io.Reader to buffer: %v", err)
 	}
 
 	if body.Mask != nil {
@@ -138,6 +141,9 @@ type ImageVariationRequestBody struct {
 }
 
 func (body ImageVariationRequestBody) ToMultipartFormData() (buf *bytes.Buffer, contenttype string, err error) {
+	if body.Image == nil {
+		return nil, "", fmt.Errorf("body.Image must not be nil")
+	}
 	buf = bytes.NewBuffer(nil)
 	w := multipart.NewWriter(buf)
 	defer w.Close()

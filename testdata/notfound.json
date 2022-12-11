@@ -1,0 +1,8 @@
+{
+    "error": {
+      "message": "Invalid URL (GET /v1/foobaa)",
+      "type": "invalid_request_error",
+      "param": null,
+      "code": null
+    }
+  }

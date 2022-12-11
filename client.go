@@ -63,11 +63,11 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	}
 	r, contenttype, err := client.bodyToReader(body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to build request buf from given body: %v", err)
 	}
 	req, err = http.NewRequest(method, endpoint, r)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to init request: %v", err)
 	}
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
@@ -83,8 +83,8 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 func (client *Client) bodyToReader(body interface{}) (io.Reader, string, error) {
 	var r io.Reader
 	switch v := body.(type) {
-	case io.Reader:
-		r = v
+	// case io.Reader:
+	// 	r = v
 	case nil:
 		r = nil
 	case MultipartFormDataRequestBody: // TODO: Refactor
@@ -116,13 +116,13 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 		return client.apiError(httpres)
 	}
 	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
-		return err
+		return fmt.Errorf("failed to decode response to %T: %v", response, err)
 	}
 	return nil
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
-	req, err := client.build(ctx, http.MethodPost, p, body)
+	req, err := client.build(ctx, method, p, body)
 	if err != nil {
 		return resp, err
 	}

@@ -71,7 +71,7 @@ func (client *Client) CreateEmbedding(ctx context.Context, body EmbeddingCreateR
 // ListFiles: GET https://api.openai.com/v1/files
 // Returns a list of files that belong to the user's organization.
 // See https://beta.openai.com/docs/api-reference/files/list
-func (client *Client) ListFiles(ctx context.Context) (resp ListFilesResponse, err error) {
+func (client *Client) ListFiles(ctx context.Context) (resp FileListResponse, err error) {
 	p := "/files"
 	return call(ctx, client, http.MethodGet, p, nil, resp)
 }
@@ -107,7 +107,7 @@ func (client *Client) RetrieveFile(ctx context.Context, id string) (resp FileRet
 // User must Close response after used.
 // See https://beta.openai.com/docs/api-reference/files/retrieve-content
 func (client *Client) RetrieveFileContent(ctx context.Context, id string) (res io.ReadCloser, err error) {
-	endpoint, err := client.endpoint(fmt.Sprintf("/files/%s", id))
+	endpoint, err := client.endpoint(fmt.Sprintf("/files/%s/content", id))
 	if err != nil {
 		return nil, err
 	}

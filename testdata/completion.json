@@ -1,0 +1,19 @@
+{
+    "id": "cmpl-6LxNg3sbNoryG6yulQ0GnOTRQY7Q8",
+    "object": "text_completion",
+    "created": 1670691168,
+    "model": "text-davinci-003",
+    "choices": [
+        {
+            "text": "\n\n今は元気です。",
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 13,
+        "completion_tokens": 12,
+        "total_tokens": 25
+    }
+}

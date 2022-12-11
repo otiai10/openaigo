@@ -26,5 +26,5 @@ func (client *Client) apiError(res *http.Response) error {
 	if err := json.NewDecoder(res.Body).Decode(&errbody); err != nil {
 		return fmt.Errorf("failed to decode error body: %v", err)
 	}
-	return errbody.Error
+	return fmt.Errorf("openai api error: %v", errbody.Error)
 }

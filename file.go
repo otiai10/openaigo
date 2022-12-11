@@ -2,11 +2,12 @@ package openaigo
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"mime/multipart"
 )
 
-type ListFilesResponse struct {
+type FileListResponse struct {
 	Object string     `json:"object"`
 	Data   []FileData `json:"data"`
 }
@@ -26,6 +27,9 @@ type FileUploadRequestBody struct {
 }
 
 func (body FileUploadRequestBody) ToMultipartFormData() (*bytes.Buffer, string, error) {
+	if body.File == nil {
+		return nil, "", fmt.Errorf("body.File must not be nil")
+	}
 	buf := bytes.NewBuffer(nil)
 	w := multipart.NewWriter(buf)
 	defer w.Close()
