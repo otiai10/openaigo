@@ -15,13 +15,13 @@ type Scenario struct {
 	Run  func() (any, error)
 }
 
-var OPENAI_APIKEY string
+var OPENAI_API_KEY string
 
 var scenarios = []Scenario{
 	{
 		Name: "completion",
 		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_APIKEY)
+			client := openaigo.NewClient(OPENAI_API_KEY)
 			request := openaigo.CompletionRequestBody{
 				Model:  "text-davinci-003",
 				Prompt: []string{"Say this is a test"},
@@ -32,7 +32,7 @@ var scenarios = []Scenario{
 	{
 		Name: "image_edit",
 		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_APIKEY)
+			client := openaigo.NewClient(OPENAI_API_KEY)
 			f, err := os.Open("./testdata/baby-sea-otter.png")
 			if err != nil {
 				return nil, err
@@ -49,7 +49,7 @@ var scenarios = []Scenario{
 	{
 		Name: "image_variation",
 		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_APIKEY)
+			client := openaigo.NewClient(OPENAI_API_KEY)
 			f, err := os.Open("./testdata/baby-sea-otter.png")
 			if err != nil {
 				return nil, err
@@ -67,7 +67,7 @@ var scenarios = []Scenario{
 
 func init() {
 	flag.Parse()
-	OPENAI_APIKEY = os.Getenv("OPENAI_APIKEY")
+	OPENAI_API_KEY = os.Getenv("OPENAI_API_KEY")
 }
 
 func main() {

@@ -22,4 +22,4 @@ jobs:
     - name: Test
       run: go run ./testapp/main.go
       env:
-        OPENAI_APIKEY: ${{ secrets.OPENAI_APIKEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_APIKEY }}

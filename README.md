@@ -24,7 +24,7 @@ import (
 )
 
 func main() {
-  client := openaigo.NewClient(os.Getenv("OPENAI_APIKEY"))
+  client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
   request := openaigo.CompletionRequestBody{
     Model:  "text-davinci-003",
     Prompt: []string{"Say this is a test"},
@@ -39,7 +39,7 @@ if you just want to try, hit commands below.
 ```shell
 git clone git@github.com:otiai10/openaigo.git
 cd openaigo
-OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
+OPENAI_API_KEY=YourAPIKey go run ./testapp/main.go
 ```
 
 # Endpoint Support
@@ -75,3 +75,9 @@ OPENAI_APIKEY=YourAPIKey go run ./testapp/main.go
 - ~~Engines~~ *(deprecated)*
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
+
+# Issues
+
+Report any issue here or any feedback is welcomed.
+
+* https://github.com/otiai10/openaigo/issues
