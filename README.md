@@ -5,6 +5,7 @@
 [![App Test over API](https://github.com/otiai10/openaigo/actions/workflows/api.yml/badge.svg)](https://github.com/otiai10/openaigo/actions/workflows/api.yml)
 <br>[![License](https://img.shields.io/github/license/otiai10/openaigo)](https://github.com/otiai10/openaigo/blob/main/LICENSE)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotiai10%2Fopenaigo.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotiai10%2Fopenaigo?ref=badge_shield)
+[![Maintainability](https://api.codeclimate.com/v1/badges/20c434b47940ce8ed511/maintainability)](https://codeclimate.com/github/otiai10/openaigo/maintainability)
 [![Go Report Card](https://goreportcard.com/badge/github.com/otiai10/openaigo)](https://goreportcard.com/report/github.com/otiai10/openaigo)
 [![codecov](https://codecov.io/github/otiai10/openaigo/branch/main/graph/badge.svg?token=mfAYgn6Uto)](https://codecov.io/github/otiai10/openaigo)
 [![Reference](https://img.shields.io/github/v/tag/otiai10/openaigo?sort=semver)](https://pkg.go.dev/github.com/otiai10/openaigo)
