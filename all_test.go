@@ -41,6 +41,39 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/models/text-davinci-003", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, e := os.Open("./testdata/text-davinci-003.json")
+			if e != nil {
+				panic(e)
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/edits", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, e := os.Open("./testdata/edits-create.json")
+			if e != nil {
+				panic(e)
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/images/generations", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, e := os.Open("./testdata/image-create.json")
+			if e != nil {
+				panic(e)
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
 	mux.HandleFunc("/images/edits", func(w http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodPost:

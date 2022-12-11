@@ -1,6 +1,6 @@
 package openaigo
 
-type EditRequestBody struct {
+type EditCreateRequestBody struct {
 	Model       string  `json:"model"`
 	Instruction string  `json:"instruction"`
 	Input       string  `json:"input,omitempty"`
@@ -9,7 +9,7 @@ type EditRequestBody struct {
 	TopP        float32 `json:"top_p,omitempty"`
 }
 
-type EditResponse struct {
+type EditCreateResponse struct {
 	Object  ObjectType `json:"object"`
 	Created int64      `json:"craeted"`
 	Choices []Choice   `json:"choices"`

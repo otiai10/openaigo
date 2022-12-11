@@ -1,0 +1,24 @@
+{
+  "id": "text-davinci-003",
+  "object": "model",
+  "created": 1669599635,
+  "owned_by": "openai-internal",
+  "permission": [
+    {
+      "id": "modelperm-NFSavcOn3jzqNG8maspoV7WA",
+      "object": "model_permission",
+      "created": 1670634735,
+      "allow_create_engine": false,
+      "allow_sampling": true,
+      "allow_logprobs": true,
+      "allow_search_indices": false,
+      "allow_view": true,
+      "allow_fine_tuning": false,
+      "organization": "*",
+      "group": null,
+      "is_blocking": false
+    }
+  ],
+  "root": "text-davinci-003",
+  "parent": null
+}

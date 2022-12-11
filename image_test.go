@@ -7,6 +7,16 @@ import (
 	. "github.com/otiai10/mint"
 )
 
+func TestClient_CreateImage(t *testing.T) {
+	client := NewClient("")
+	client.BaseURL = mockserver.URL
+	res, err := client.CreateImage(nil, ImageGenerationRequestBody{
+		Prompt: "A cute baby sea otter",
+	})
+	Expect(t, err).ToBe(nil)
+	Expect(t, res).TypeOf("openaigo.ImageGenerationResponse")
+}
+
 func TestClient_EditImage(t *testing.T) {
 	f, err := os.Open("./testdata/baby-sea-otter.png")
 	if err != nil {

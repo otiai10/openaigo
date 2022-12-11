@@ -34,7 +34,7 @@ func (client *Client) Completion(ctx context.Context, body CompletionRequestBody
 // Edit: POST https://api.openai.com/v1/edits
 // Creates a new edit for the provided input, instruction, and parameters.
 // See https://beta.openai.com/docs/api-reference/edits/create
-func (client *Client) Edit(ctx context.Context, body EditRequestBody) (resp EditResponse, err error) {
+func (client *Client) CreateEdit(ctx context.Context, body EditCreateRequestBody) (resp EditCreateResponse, err error) {
 	p := "/edits"
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }

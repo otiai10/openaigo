@@ -13,3 +13,11 @@ func TestClient_ListModels(t *testing.T) {
 	Expect(t, err).ToBe(nil)
 	Expect(t, res).TypeOf("openaigo.ModelsListResponse")
 }
+
+func TestClient_RetrieveModel(t *testing.T) {
+	client := NewClient("")
+	client.BaseURL = mockserver.URL
+	res, err := client.RetrieveModel(nil, "text-davinci-003")
+	Expect(t, err).ToBe(nil)
+	Expect(t, res).TypeOf("openaigo.ModelRetrieveResponse")
+}
