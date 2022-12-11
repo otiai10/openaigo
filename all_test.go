@@ -52,6 +52,9 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/models/200-but-invalidjson", func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("{"))
+	})
 	mux.HandleFunc("/models/text-davinci-003", func(w http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodGet:
