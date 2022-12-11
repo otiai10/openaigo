@@ -109,6 +109,27 @@ func testserverV1() *httptest.Server {
 			})
 		}
 	})
+	mux.HandleFunc("/files/abc", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]any{
+				"error": map[string]any{
+					"message": "No such File object: abc",
+					"type":    "invalid_request_error",
+					"param":   "id",
+					"code":    nil,
+				},
+			})
+		}
+	})
+	mux.HandleFunc("/files/zzz", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("{....///"))
+		}
+	})
 	mux.HandleFunc("/files/abcdefg/content", func(w http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodGet:

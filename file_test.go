@@ -41,6 +41,14 @@ func TestClient_RetrieveFile(t *testing.T) {
 	res, err := client.RetrieveFile(nil, "abcdefg")
 	Expect(t, err).ToBe(nil)
 	Expect(t, res).TypeOf("openaigo.FileRetrieveResponse")
+
+	_, err = client.RetrieveFile(nil, "abc")
+	Expect(t, err).Not().ToBe(nil)
+	Expect(t, err.Error()).ToBe("openai api error: invalid_request_error: No such File object: abc (param: id, code: <nil>)")
+
+	_, err = client.RetrieveFile(nil, "zzz")
+	Expect(t, err).Not().ToBe(nil)
+	Expect(t, err.Error()).ToBe("failed to decode error body: invalid character '.' looking for beginning of object key string")
 }
 
 func TestClient_DeleteFile(t *testing.T) {
