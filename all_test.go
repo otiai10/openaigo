@@ -41,6 +41,17 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/models/abcdefg", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodDelete:
+			f, e := os.Open("./testdata/text-davinci-003.json")
+			if e != nil {
+				panic(e)
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
 	mux.HandleFunc("/models/text-davinci-003", func(w http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodGet:
