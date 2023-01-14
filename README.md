@@ -45,6 +45,10 @@ cd openaigo
 OPENAI_API_KEY=YourAPIKey go run ./testapp/main.go
 ```
 
+# API Keys?
+
+Visit https://beta.openai.com/account/api-keys and you can create your own API key to get started [for free](https://openai.com/api/pricing/).
+
 # Endpoint Support
 
 - Models
