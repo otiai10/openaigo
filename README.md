@@ -9,6 +9,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/otiai10/openaigo)](https://goreportcard.com/report/github.com/otiai10/openaigo)
 [![codecov](https://codecov.io/github/otiai10/openaigo/branch/main/graph/badge.svg?token=mfAYgn6Uto)](https://codecov.io/github/otiai10/openaigo)
 [![Reference](https://img.shields.io/github/v/tag/otiai10/openaigo?sort=semver)](https://pkg.go.dev/github.com/otiai10/openaigo)
+[![GoDoc](https://pkg.go.dev/badge/github.com/otiai10/openaigo)](https://pkg.go.dev/github.com/otiai10/openaigo)
 
 Yet another API client for `api.openai.com`.
 
