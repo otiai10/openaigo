@@ -31,7 +31,8 @@ func main() {
     Model:  "text-davinci-003",
     Prompt: []string{"Say this is a test"},
   }
-  response, err := client.Completion(nil, request)
+  ctx := context.Background()
+  response, err := client.Completion(ctx, request)
   fmt.Println(response, err)
 }
 ```
