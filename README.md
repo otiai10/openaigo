@@ -40,7 +40,7 @@ func main() {
 if you just want to try, hit commands below.
 
 ```shell
-git clone git@github.com:otiai10/openaigo.git
+git clone https://github.com/otiai10/openaigo.git
 cd openaigo
 OPENAI_API_KEY=YourAPIKey go run ./testapp/main.go
 ```
