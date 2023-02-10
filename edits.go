@@ -11,7 +11,7 @@ type EditCreateRequestBody struct {
 
 type EditCreateResponse struct {
 	Object  ObjectType `json:"object"`
-	Created int64      `json:"craeted"`
+	Created int64      `json:"created"`
 	Choices []Choice   `json:"choices"`
 	Usage   Usage      `json:"usage"`
 }
