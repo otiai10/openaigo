@@ -190,3 +190,15 @@ func (client *Client) DeleteFineTuneModel(ctx context.Context, id string) (resp 
 	p := fmt.Sprintf("/models/%s", id)
 	return call(ctx, client, http.MethodDelete, p, nil, resp)
 }
+
+// Chat, short-hand of ChatCompletion.
+func (client *Client) Chat(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
+	return client.ChatCompletion(ctx, body)
+}
+
+// ChatCompletion: POST https://api.openai.com/v1/chat/completion
+// See https://platform.openai.com/docs/api-reference/chat/create
+func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
+	p := "/chat/completions"
+	return call(ctx, client, http.MethodPost, p, body, resp)
+}

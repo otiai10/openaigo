@@ -27,9 +27,11 @@ import (
 
 func main() {
   client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
-  request := openaigo.CompletionRequestBody{
-    Model:  "text-davinci-003",
-    Prompt: []string{"Say this is a test"},
+  request := openaigo.ChatCompletionRequestBody{
+    Model: "gpt-3.5-turbo",
+    Messages: []openaigo.ChatMessage{
+      {Role: "user", Content: "Hello!"},
+    },
   }
   ctx := context.Background()
   response, err := client.Completion(ctx, request)
@@ -54,8 +56,10 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
 - Models
   - [x] [List models](https://beta.openai.com/docs/api-reference/models/list)
   - [x] [Retrieve model](https://beta.openai.com/docs/api-reference/models/retrieve)
-- Completions
+- Text Completions
   - [x] [Create completion](https://beta.openai.com/docs/api-reference/completions/create)
+- **Chat Completions** <- NEW!
+  - [x] [Create Chat Completions](https://platform.openai.com/docs/api-reference/chat/create)
 - Edits
   - [x] [Create edits](https://beta.openai.com/docs/api-reference/edits/create)
 - Images

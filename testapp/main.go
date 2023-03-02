@@ -63,6 +63,19 @@ var scenarios = []Scenario{
 
 		},
 	},
+	{
+		Name: "chat_completion",
+		Run: func() (any, error) {
+			client := openaigo.NewClient(OPENAI_API_KEY)
+			request := openaigo.ChatCompletionRequestBody{
+				Model: "gpt-3.5-turbo",
+				Messages: []openaigo.ChatMessage{
+					{Role: "user", Content: "Hello!"},
+				},
+			}
+			return client.Chat(nil, request)
+		},
+	},
 }
 
 func init() {
