@@ -34,7 +34,7 @@ func main() {
     },
   }
   ctx := context.Background()
-  response, err := client.Completion(ctx, request)
+  response, err := client.Chat(ctx, request)
   fmt.Println(response, err)
 }
 ```
