@@ -91,6 +91,16 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
 
+# Need Proxy?
+
+```go
+client := openaigo.NewClient(OPENAI_API_KEY)
+// You can set whatever you want
+transport := &http.Transport{ Proxy: http.ProxyFromEnvironment }
+client.HTTPClient = &http.Client{ Transport: transport }
+// Done!
+```
+
 # Issues
 
 Report any issue here or any feedback is welcomed.
