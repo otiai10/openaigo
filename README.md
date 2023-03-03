@@ -21,22 +21,26 @@ This library is community-maintained, NOT officially supported by OpenAI.
 package main
 
 import (
-  "fmt"
-  "github.com/otiai10/openaigo"
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/otiai10/openaigo"
 )
 
 func main() {
-  client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
-  request := openaigo.ChatCompletionRequestBody{
-    Model: "gpt-3.5-turbo",
-    Messages: []openaigo.ChatMessage{
-      {Role: "user", Content: "Hello!"},
-    },
-  }
-  ctx := context.Background()
-  response, err := client.Chat(ctx, request)
-  fmt.Println(response, err)
+	client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
+	request := openaigo.ChatCompletionRequestBody{
+		Model: "gpt-3.5-turbo",
+		Messages: []openaigo.ChatMessage{
+			{Role: "user", Content: "Hello!"},
+		},
+	}
+	ctx := context.Background()
+	response, err := client.Chat(ctx, request)
+	fmt.Println(response, err)
 }
+
 ```
 
 if you just want to try, hit commands below.
