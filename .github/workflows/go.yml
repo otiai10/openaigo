@@ -27,6 +27,9 @@ jobs:
       run: go get -v -t -d ./...
     - name: Test
       run: go test -v --tags=go${{ matrix.go }}
+    - name: Format
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: COUNT=`go fmt | wc -l`; if [ $COUNT -gt 0 ]; then exit 1; fi
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
