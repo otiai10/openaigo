@@ -50,7 +50,7 @@ type ChatCompletionResponse struct {
 	Object  string       `json:"object"`
 	Created int64        `json:"created"`
 	Choices []ChatChoice `json:"choices"`
-	Usage        Usage       `json:"usage"`
+	Usage   Usage        `json:"usage"`
 }
 
 type ChatChoice struct {
