@@ -50,11 +50,11 @@ type ChatCompletionResponse struct {
 	Object  string       `json:"object"`
 	Created int64        `json:"created"`
 	Choices []ChatChoice `json:"choices"`
+	Usage   Usage        `json:"usage"`
 }
 
 type ChatChoice struct {
 	Index        int         `json:"index"`
 	Message      ChatMessage `json:"message"`
 	FinishReason string      `json:"finish_reason"`
-	Usage        Usage       `json:"usage"`
 }
