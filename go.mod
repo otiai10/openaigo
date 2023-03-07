@@ -1,4 +1,4 @@
-module github.com/otiai10/openaigo-stream
+module github.com/otiai10/openaigo
 
 go 1.18
 
