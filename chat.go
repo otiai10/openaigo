@@ -59,6 +59,7 @@ type ChatChoice struct {
 	FinishReason string      `json:"finish_reason"`
 }
 
+// Stream Object
 type ChatCompletionStreamResponse struct {
 	ID      string       `json:"id"`
 	Object  string       `json:"object"`

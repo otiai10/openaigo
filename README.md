@@ -43,6 +43,44 @@ func main() {
 
 ```
 
+```go
+
+package main
+
+import (
+  "context"
+  "fmt"
+  "os"
+
+  "github.com/otiai10/openaigo"
+)
+
+func main () {
+
+
+  client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
+  request := openaigo.ChatCompletionRequestBody{
+	  Model: "gpt-3.5-turbo",
+      Messages: []openaigo.ChatMessage{
+          {Role: "user", Content: "Hello!"},
+	  },
+  }
+  
+  request := openaigo.ChatCompletionRequestBody{
+	  Model:    "gpt-3.5-turbo-0301",
+      Messages: message,
+      Stream:   true,
+  }
+  
+  client.ChatStream(ctx, request, func(response openaigo.ChatCompletionStreamResponse, err error) {
+      if err == nil {
+            fmt.Printf("%s", response.Choices[0].Delta.Content)
+      }
+  })
+}
+
+```
+
 if you just want to try, hit commands below.
 
 ```shell

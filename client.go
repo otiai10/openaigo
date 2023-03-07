@@ -1,15 +1,16 @@
 package openaigo
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
-	"bufio"
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -73,7 +74,7 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
 	
-	if stream {
+	if stream { // support SSE  https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
 		req.Header.Set("Accept", "text/event-stream")
 		req.Header.Set("Cache-Control", "no-cache")
 		req.Header.Set("Connection", "keep-alive")
@@ -154,15 +155,19 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 	for {
 
-		line, err := reader.ReadBytes('\n')
+		s, err := reader.ReadString('\n')
 		if err == io.EOF {
 			callBack(ChatCompletionStreamResponse{}, err)
 			break
 		}
 
-		s := string(line)
 		if strings.EqualFold(s, "data: [DONE]") {
 			callBack(ChatCompletionStreamResponse{}, io.EOF)
+			break
+		}
+
+		if strings.HasPrefix(s, "error: ") {
+			callBack(ChatCompletionStreamResponse{}, errors.New(s))
 			break
 		}
 
