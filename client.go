@@ -155,13 +155,15 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 	for {
 
-		s, err := reader.ReadString('\n')
+		line, err := reader.ReadBytes('\n')
 		if err == io.EOF {
 			callBack(ChatCompletionStreamResponse{}, err)
 			break
 		}
 
-		if strings.EqualFold(s, "data: [DONE]") {
+		s := string(line)
+
+		if strings.HasPrefix(s, "data: [DONE]") {
 			callBack(ChatCompletionStreamResponse{}, io.EOF)
 			break
 		}
@@ -171,11 +173,19 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 			break
 		}
 
-		s = strings.TrimSpace(s)
 		s = strings.TrimPrefix(s, "data: ")
-		
-		v := ChatCompletionStreamResponse{}
-		err = json.Unmarshal([]byte(s), &v)
-		callBack(v, err)
+		s = strings.TrimSpace(s)
+
+
+
+		if len(s) > 0 {
+			v := ChatCompletionStreamResponse{}
+			err = json.Unmarshal([]byte(s), &v)
+			callBack(v, err)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+
 	}
 }
