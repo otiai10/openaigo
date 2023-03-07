@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"bufio"
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -56,7 +57,7 @@ func (client *Client) endpoint(p string) (string, error) {
 	return u.String(), nil
 }
 
-func (client *Client) build(ctx context.Context, method, p string, body interface{}) (req *http.Request, err error) {
+func (client *Client) build(ctx context.Context, method, p string, body interface{}, stream bool) (req *http.Request, err error) {
 	endpoint, err := client.endpoint(p)
 	if err != nil {
 		return nil, err
@@ -71,6 +72,13 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	}
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
+	
+	if stream {
+		req.Header.Set("Accept", "text/event-stream")
+		req.Header.Set("Cache-Control", "no-cache")
+		req.Header.Set("Connection", "keep-alive")
+	}
+	
 	if client.Organization != "" {
 		req.Header.Add("OpenAI-Organization", client.Organization)
 	}
@@ -122,10 +130,47 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
-	req, err := client.build(ctx, method, p, body)
+	req, err := client.build(ctx, method, p, body, false)
 	if err != nil {
 		return resp, err
 	}
 	err = client.execute(req, &resp)
 	return resp, err
+}
+
+func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, callBack func(response ChatCompletionStreamResponse, err error)){
+	req, err := client.build(ctx, method, p, body, true)
+	if err != nil {
+		callBack(ChatCompletionStreamResponse{}, err)
+		return
+	}
+	
+	if client.HTTPClient == nil {
+		client.HTTPClient = http.DefaultClient
+	}
+
+	resp, err := client.HTTPClient.Do(req)
+	reader := bufio.NewReader(resp.Body)
+
+	for {
+
+		line, err := reader.ReadBytes('\n')
+		if err == io.EOF {
+			callBack(ChatCompletionStreamResponse{}, err)
+			break
+		}
+
+		s := string(line)
+		if strings.EqualFold(s, "data: [DONE]") {
+			callBack(ChatCompletionStreamResponse{}, io.EOF)
+			break
+		}
+
+		s = strings.TrimSpace(s)
+		s = strings.TrimPrefix(s, "data: ")
+		
+		v := ChatCompletionStreamResponse{}
+		err = json.Unmarshal([]byte(s), &v)
+		callBack(v, err)
+	}
 }

@@ -10,7 +10,7 @@ type ChatCompletionRequestBody struct {
 	TopP        float32       `json:"top_p,omitempty"`
 	N           int           `json:"n,omitempty"`
 	// TODO:
-	// Stream bool `json:"stream,omitempty"`
+	Stream bool `json:"stream,omitempty"`
 	Stop             []string       `json:"stop,omitempty"`
 	MaxTokens        int            `json:"max_tokens,omitempty"`
 	PresencePenalty  float32        `json:"presence_penalty,omitempty"`
@@ -57,4 +57,22 @@ type ChatChoice struct {
 	Index        int         `json:"index"`
 	Message      ChatMessage `json:"message"`
 	FinishReason string      `json:"finish_reason"`
+}
+
+type ChatCompletionStreamResponse struct {
+	ID      string       `json:"id"`
+	Object  string       `json:"object"`
+	Created int64        `json:"created"`
+	Model   string		 `json:"model"`
+	Choices []ChatStreamChoice `json:"choices"`
+}
+
+type ChatStreamChoice struct {
+	Delta ChatStreamDelta `json:"delta"`
+	Index int64 `json:"index"`
+	FinishReason string `json:"finish_reason"`
+}
+
+type ChatStreamDelta struct {
+	Content string `json:"content"`
 }
