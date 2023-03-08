@@ -91,6 +91,18 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
 
+# Stream support
+
+```go
+body.Stream = true
+res, _ := client.Chat(ctx, body)
+// You can access chan by Stream() method.
+for data := range res.Stream() {
+  fmt.Println(data.Choices[0].Delta.Content)
+}
+// The chan will be closed automatically when it finishes.
+```
+
 # Need Proxy?
 
 ```go
