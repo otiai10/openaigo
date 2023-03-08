@@ -101,8 +101,9 @@ type ChatCompletionResponse struct {
 	Usage   Usage        `json:"usage"`
 
 	// Custom field added by github.com/otiai10/openaigo
-	Error  error                       `json:"-"`
 	stream chan ChatCompletionResponse `json:"-"`
+	// TODO: Error handling of stream mode.
+	// Error error `json:"-"`
 }
 
 func (r ChatCompletionResponse) Stream() <-chan ChatCompletionResponse {

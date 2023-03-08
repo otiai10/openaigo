@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	StreamDelimiter   = '\n'
 	StreamPrefixDATA  = []byte("data: ")
 	StreamSignalDONE  = []byte("[DONE]")
 	StreamPrefixERROR = []byte("error: ")
@@ -128,10 +127,18 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 		if v.stream != nil {
 			go handle(v.stream, httpres.Body)
 		}
-		return nil
+	case *CompletionResponse:
+		if v.stream != nil {
+			go handle(v.stream, httpres.Body)
+		}
+	case *FineTuneListEventsResponse:
+		if v.stream != nil {
+			go handle(v.stream, httpres.Body)
+		}
 	default:
 		return decode(response, httpres.Body)
 	}
+	return nil
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
@@ -151,9 +158,11 @@ func decode(response any, body io.ReadCloser) error {
 	return nil
 }
 
-func handle(stream chan<- ChatCompletionResponse, body io.ReadCloser) {
-	defer close(stream)
+// handle handles data-only server-sent events from HTTP response body.
+// This is used only for Create Completion, Create Chat Completion and List FineTune events.
+func handle[T any](stream chan<- T, body io.ReadCloser) {
 	defer body.Close()
+	defer close(stream)
 	s := bufio.NewScanner(body)
 	for s.Scan() {
 		b := s.Bytes()
@@ -164,11 +173,12 @@ func handle(stream chan<- ChatCompletionResponse, body io.ReadCloser) {
 			if bytes.HasSuffix(b, StreamSignalDONE) {
 				return
 			}
-			r := ChatCompletionResponse{}
-			if err := json.Unmarshal(b[len(StreamPrefixDATA):], &r); err != nil {
-				r.Error = err
+			r := new(T)
+			if err := json.Unmarshal(b[len(StreamPrefixDATA):], r); err != nil {
+				// TODO: Error handling in stream mode
+				// r.Error = err
 			}
-			stream <- r
+			stream <- *r
 		} else if bytes.HasPrefix(b, StreamPrefixERROR) {
 			return
 		}

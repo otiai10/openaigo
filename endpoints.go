@@ -28,6 +28,9 @@ func (client *Client) RetrieveModel(ctx context.Context, model string) (resp Mod
 // See https://beta.openai.com/docs/api-reference/completions/create
 func (client *Client) Completion(ctx context.Context, body CompletionRequestBody) (resp CompletionResponse, err error) {
 	p := "/completions"
+	if body.Stream {
+		resp.stream = make(chan CompletionResponse)
+	}
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }
 
@@ -178,8 +181,11 @@ func (client *Client) CancelFineTune(ctx context.Context, id string) (resp FineT
 // ListFineTuneEvents: GET https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events
 // Get fine-grained status updates for a fine-tune job.
 // See https://beta.openai.com/docs/api-reference/fine-tunes/events
-func (client *Client) ListFineTuneEvents(ctx context.Context, id string) (resp FineTuneListEventsResponse, err error) {
-	p := fmt.Sprintf("/fine-tunes/%s/events", id)
+func (client *Client) ListFineTuneEvents(ctx context.Context, id string, stream bool) (resp FineTuneListEventsResponse, err error) {
+	p := fmt.Sprintf("/fine-tunes/%s/events?stream=%v", id, stream)
+	if stream {
+		resp.stream = make(chan FineTuneListEventsResponse)
+	}
 	return call(ctx, client, http.MethodGet, p, nil, resp)
 }
 

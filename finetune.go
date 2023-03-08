@@ -68,6 +68,15 @@ type FineTuneCancelResponse struct {
 type FineTuneListEventsResponse struct {
 	Object string          `json:"object"`
 	Data   []FineTuneEvent `json:"data"`
+
+	// Custom field added by github.com/otiai10/openaigo
+	stream chan FineTuneListEventsResponse
+	// TODO: Error handling in stream mode
+	// Error error `json:"-"`
+}
+
+func (r FineTuneListEventsResponse) Stream() <-chan FineTuneListEventsResponse {
+	return r.stream
 }
 
 type FineTuneDeleteModelResponse struct {

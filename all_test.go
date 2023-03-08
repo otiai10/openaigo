@@ -268,7 +268,20 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
-	mux.HandleFunc("/fine-tunes/abcdefghi/events", func(w http.ResponseWriter, req *http.Request) {
+	mux.HandleFunc("/fine-tunes/abcdefghi/events?stream=true", func(w http.ResponseWriter, req *http.Request) {
+		// TODO: more precise test case for stream
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetune-events-list.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine-tunes/abcdefghi/events?stream=false", func(w http.ResponseWriter, req *http.Request) {
 		switch req.Method {
 		case http.MethodGet:
 			f, err := os.Open("./testdata/finetune-events-list.json")
@@ -281,6 +294,13 @@ func testserverV1() *httptest.Server {
 		}
 	})
 	mux.HandleFunc("/chat/completions", func(w http.ResponseWriter, req *http.Request) {
+		body := map[string]any{}
+		json.NewDecoder(req.Body).Decode(&body)
+		req.Body.Close()
+		if body["stream"] == true {
+			w.Write([]byte("data: {}"))
+			return
+		}
 		f, err := os.Open("./testdata/chat-completion.json")
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
