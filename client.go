@@ -128,15 +128,10 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 		if v.stream != nil {
 			go handle(v.stream, httpres.Body)
 		}
-		fmt.Println(v.stream)
 		return nil
+	default:
+		return decode(response, httpres.Body)
 	}
-
-	defer httpres.Body.Close()
-	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
-		return fmt.Errorf("failed to decode response to %T: %v", response, err)
-	}
-	return nil
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
@@ -146,6 +141,14 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	}
 	err = client.execute(req, &resp)
 	return resp, err
+}
+
+func decode(response any, body io.ReadCloser) error {
+	defer body.Close()
+	if err := json.NewDecoder(body).Decode(response); err != nil {
+		return fmt.Errorf("failed to decode response to %T: %v", response, err)
+	}
+	return nil
 }
 
 func handle(stream chan<- ChatCompletionResponse, body io.ReadCloser) {
