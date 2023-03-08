@@ -75,6 +75,7 @@ type FineTuneListEventsResponse struct {
 	// Error error `json:"-"`
 }
 
+// Stream provides chan for streaming ONLY WHEN `stream: true` is given in the request.
 func (r FineTuneListEventsResponse) Stream() <-chan FineTuneListEventsResponse {
 	return r.stream
 }

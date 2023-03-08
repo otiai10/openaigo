@@ -106,6 +106,7 @@ type ChatCompletionResponse struct {
 	// Error error `json:"-"`
 }
 
+// Stream provides chan for streaming ONLY WHEN `stream: true` is given in the request.
 func (r ChatCompletionResponse) Stream() <-chan ChatCompletionResponse {
 	return r.stream
 }
