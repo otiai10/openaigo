@@ -202,5 +202,8 @@ func (client *Client) Chat(ctx context.Context, body ChatCompletionRequestBody) 
 // See https://platform.openai.com/docs/api-reference/chat/create
 func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
 	p := "/chat/completions"
+	if body.Stream {
+		resp.stream = make(chan ChatCompletionResponse)
+	}
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }

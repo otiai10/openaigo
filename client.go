@@ -1,6 +1,7 @@
 package openaigo
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -9,6 +10,13 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+)
+
+var (
+	StreamDelimiter   = '\n'
+	StreamPrefixDATA  = []byte("data: ")
+	StreamSignalDONE  = []byte("[DONE]")
+	StreamPrefixERROR = []byte("error: ")
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -111,10 +119,20 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer httpres.Body.Close()
 	if httpres.StatusCode >= 400 {
 		return client.apiError(httpres)
 	}
+
+	switch v := (response).(type) {
+	case *ChatCompletionResponse:
+		if v.stream != nil {
+			go handle(v.stream, httpres.Body)
+		}
+		fmt.Println(v.stream)
+		return nil
+	}
+
+	defer httpres.Body.Close()
 	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
 		return fmt.Errorf("failed to decode response to %T: %v", response, err)
 	}
@@ -128,4 +146,29 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	}
 	err = client.execute(req, &resp)
 	return resp, err
+}
+
+func handle(stream chan<- ChatCompletionResponse, body io.ReadCloser) {
+	defer close(stream)
+	defer body.Close()
+	s := bufio.NewScanner(body)
+	for s.Scan() {
+		b := s.Bytes()
+		if len(b) == 0 {
+			continue
+		}
+		if bytes.HasPrefix(b, StreamPrefixDATA) {
+			if bytes.HasSuffix(b, StreamSignalDONE) {
+				return
+			}
+			r := ChatCompletionResponse{}
+			if err := json.Unmarshal(b[len(StreamPrefixDATA):], &r); err != nil {
+				r.Error = err
+			}
+			stream <- r
+		} else if bytes.HasPrefix(b, StreamPrefixERROR) {
+			return
+		}
+	}
+	return
 }

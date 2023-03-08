@@ -96,12 +96,26 @@ type ChatCompletionResponse struct {
 	ID      string       `json:"id"`
 	Object  string       `json:"object"`
 	Created int64        `json:"created"`
+	Model   string       `json:"model"`
 	Choices []ChatChoice `json:"choices"`
 	Usage   Usage        `json:"usage"`
+
+	// Custom field added by github.com/otiai10/openaigo
+	Error  error                       `json:"-"`
+	stream chan ChatCompletionResponse `json:"-"`
+}
+
+func (r ChatCompletionResponse) Stream() <-chan ChatCompletionResponse {
+	return r.stream
 }
 
 type ChatChoice struct {
 	Index        int         `json:"index"`
 	Message      ChatMessage `json:"message"`
 	FinishReason string      `json:"finish_reason"`
+	Delta        ChatDelta   `json:"delta"`
+}
+
+type ChatDelta struct {
+	Content string `json:"content"`
 }
