@@ -43,19 +43,9 @@ func TestClient_CancelFineTune(t *testing.T) {
 func TestClient_ListFineTuneEvents(t *testing.T) {
 	client := NewClient("")
 	client.BaseURL = mockserver.URL
-	res, err := client.ListFineTuneEvents(nil, "abcdefghi", false)
+	res, err := client.ListFineTuneEvents(nil, "abcdefghi")
 	Expect(t, err).ToBe(nil)
 	Expect(t, res).TypeOf("openaigo.FineTuneListEventsResponse")
-	Expect(t, res.Stream()).ToBe(nil)
-}
-
-func TestClient_ListFineTuneEvents_stream(t *testing.T) {
-	client := NewClient("")
-	client.BaseURL = mockserver.URL
-	res, err := client.ListFineTuneEvents(nil, "abcdefghi", true)
-	Expect(t, err).ToBe(nil)
-	Expect(t, res).TypeOf("openaigo.FineTuneListEventsResponse")
-	Expect(t, res.Stream()).Not().ToBe(nil)
 }
 
 func TestClient_DeleteFineTune(t *testing.T) {

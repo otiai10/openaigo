@@ -95,14 +95,4 @@ type CompletionResponse struct {
 	Model   string     `json:"model"`
 	Choices []Choice   `json:"choices"`
 	Usage   Usage
-
-	// Custom field added by github.com/otiai10/openaigo
-	stream chan CompletionResponse `json:"-"`
-	// TODO: Error handling of stream mode.
-	// Error error `json:"-"`
-}
-
-// Stream provides chan for streaming ONLY WHEN `stream: true` is given in the request.
-func (r CompletionResponse) Stream() <-chan CompletionResponse {
-	return r.stream
 }

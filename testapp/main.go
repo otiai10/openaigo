@@ -26,14 +26,7 @@ var scenarios = []Scenario{
 				Model:  "text-davinci-003",
 				Prompt: []string{"Say this is a test"},
 			}
-			res, err := client.Completion(nil, request)
-			if err != nil {
-				return res, err
-			}
-			if len(res.Choices[0].Text) == 0 {
-				return res, fmt.Errorf("no response given, that's indeed an error in this case")
-			}
-			return res, err
+			return client.Completion(nil, request)
 		},
 	},
 	{
@@ -83,26 +76,6 @@ var scenarios = []Scenario{
 			return client.Chat(nil, request)
 		},
 	},
-	{
-		Name: "chat_completion_stream",
-		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_API_KEY)
-			request := openaigo.ChatCompletionRequestBody{
-				Stream: true,
-				Model:  "gpt-3.5-turbo",
-				Messages: []openaigo.ChatMessage{
-					{Role: "user", Content: "Please write a short novel with 200 words in Haruki Murakami's style."},
-					{Role: "user", Content: "Please add \"にゃん\" in every line of the content."},
-				},
-			}
-			res, err := client.Chat(nil, request)
-			for a := range res.Stream() {
-				fmt.Print(a.Choices[0].Delta.Content)
-			}
-			fmt.Print("\n")
-			return res, err
-		},
-	},
 }
 
 func init() {
@@ -128,7 +101,7 @@ func main() {
 			fmt.Printf("\033[31mError:\033[0m %v\nTime: ", err)
 			errors = append(errors, err)
 		} else {
-			fmt.Printf("[RESULT] %+v\n\033[32mTime:\033[0m ", res)
+			fmt.Printf("%+v\n\033[32mTime:\033[0m ", res)
 		}
 		fmt.Printf("%v\n\n", elapsed)
 		dur += elapsed

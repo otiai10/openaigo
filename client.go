@@ -1,7 +1,6 @@
 package openaigo
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -10,12 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-)
-
-var (
-	StreamPrefixDATA  = []byte("data: ")
-	StreamSignalDONE  = []byte("[DONE]")
-	StreamPrefixERROR = []byte("error: ")
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -118,28 +111,14 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 	if err != nil {
 		return err
 	}
+	defer httpres.Body.Close()
 	if httpres.StatusCode >= 400 {
 		return client.apiError(httpres)
 	}
-
-	switch v := (response).(type) {
-	case *ChatCompletionResponse:
-		if v.stream != nil {
-			go handle(v.stream, httpres.Body)
-			return nil
-		}
-	case *CompletionResponse:
-		if v.stream != nil {
-			go handle(v.stream, httpres.Body)
-			return nil
-		}
-	case *FineTuneListEventsResponse:
-		if v.stream != nil {
-			go handle(v.stream, httpres.Body)
-			return nil
-		}
+	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
+		return fmt.Errorf("failed to decode response to %T: %v", response, err)
 	}
-	return decode(response, httpres.Body)
+	return nil
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
@@ -149,40 +128,4 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	}
 	err = client.execute(req, &resp)
 	return resp, err
-}
-
-func decode(response any, body io.ReadCloser) error {
-	defer body.Close()
-	if err := json.NewDecoder(body).Decode(response); err != nil {
-		return fmt.Errorf("failed to decode response to %T: %v", response, err)
-	}
-	return nil
-}
-
-// handle handles data-only server-sent events from HTTP response body.
-// This is used only for Create Completion, Create Chat Completion and List FineTune events.
-func handle[T any](stream chan<- T, body io.ReadCloser) {
-	defer body.Close()
-	defer close(stream)
-	s := bufio.NewScanner(body)
-	for s.Scan() {
-		b := s.Bytes()
-		if len(b) == 0 {
-			continue
-		}
-		if bytes.HasPrefix(b, StreamPrefixDATA) {
-			if bytes.HasSuffix(b, StreamSignalDONE) {
-				return
-			}
-			r := new(T)
-			if err := json.Unmarshal(b[len(StreamPrefixDATA):], r); err != nil {
-				// TODO: Error handling in stream mode
-				// r.Error = err
-			}
-			stream <- *r
-		} else if bytes.HasPrefix(b, StreamPrefixERROR) {
-			return
-		}
-	}
-	return
 }
