@@ -192,11 +192,13 @@ func (client *Client) DeleteFineTuneModel(ctx context.Context, id string) (resp 
 }
 
 // Chat, short-hand of ChatCompletion.
+// Creates a completion for the chat message.
 func (client *Client) Chat(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
 	return client.ChatCompletion(ctx, body)
 }
 
 // ChatCompletion: POST https://api.openai.com/v1/chat/completion
+// Creates a completion for the chat message.
 // See https://platform.openai.com/docs/api-reference/chat/create
 func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
 	p := "/chat/completions"
