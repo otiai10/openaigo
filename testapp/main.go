@@ -26,7 +26,14 @@ var scenarios = []Scenario{
 				Model:  "text-davinci-003",
 				Prompt: []string{"Say this is a test"},
 			}
-			return client.Completion(nil, request)
+			res, err := client.Completion(nil, request)
+			if err != nil {
+				return res, err
+			}
+			if len(res.Choices[0].Text) == 0 {
+				return res, fmt.Errorf("no response given, that's indeed an error in this case")
+			}
+			return res, err
 		},
 	},
 	{

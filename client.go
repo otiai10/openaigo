@@ -126,19 +126,20 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 	case *ChatCompletionResponse:
 		if v.stream != nil {
 			go handle(v.stream, httpres.Body)
+			return nil
 		}
 	case *CompletionResponse:
 		if v.stream != nil {
 			go handle(v.stream, httpres.Body)
+			return nil
 		}
 	case *FineTuneListEventsResponse:
 		if v.stream != nil {
 			go handle(v.stream, httpres.Body)
+			return nil
 		}
-	default:
-		return decode(response, httpres.Body)
 	}
-	return nil
+	return decode(response, httpres.Body)
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
