@@ -1,8 +1,8 @@
 package openaigo
 
+// ChatCompletionRequestBody:
 // https://platform.openai.com/docs/guides/chat/chat-completions-beta
 // https://platform.openai.com/docs/api-reference/chat
-// TODO: Document more
 type ChatCompletionRequestBody struct {
 	// Model: ID of the model to use.
 	// Currently, only gpt-3.5-turbo and gpt-3.5-turbo-0301 are supported.

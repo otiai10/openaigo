@@ -280,5 +280,14 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/chat/completions", func(w http.ResponseWriter, req *http.Request) {
+		f, err := os.Open("./testdata/chat-completion.json")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		defer f.Close()
+		io.Copy(w, f)
+	})
 	return httptest.NewServer(mux)
 }
