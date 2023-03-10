@@ -100,11 +100,11 @@ const (
 )
 
 type ChatCompletionResponse struct {
-	ID      string       `json:"id"`
-	Object  ChatCompletionType       `json:"object"`
-	Created int64        `json:"created"`
-	Choices []ChatChoice `json:"choices"`
-	Usage   Usage        `json:"usage"`
+	ID      string       				`json:"id"`
+	Object  ChatCompletionType       	`json:"object"`
+	Created int64        				`json:"created"`
+	Choices []ChatChoice 				`json:"choices"`
+	Usage   Usage        				`json:"usage"`
 }
 
 type ChatChoice struct {
