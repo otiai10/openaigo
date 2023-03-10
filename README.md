@@ -71,12 +71,25 @@ func main () {
         Messages: message,
         Stream:   true,
     }
+
+    events := make(chan openaigo.ChatCompletionStreamInfo)
+
+    client.ChatStream(ctx, request, events)
   
-    client.ChatStream(ctx, request, func(response openaigo.ChatCompletionStreamResponse, err error) {
-        if err == nil {
-            fmt.Printf("%s", response.Choices[0].Delta.Content)
+    for event := range events {
+      if event.Err == nil {
+        if len(event.Rsp.Choices) > 0 {
+          res := event.Rsp.Choices[0].Delta.Content
+          lastAnswer += res
+          fmt.Printf("%s", res)
         }
-    })
+      } else {
+        if event.Err != io.EOF {
+          fmt.Println(event.Err)
+        }
+        fmt.Println('\n')
+      }
+    }
 }
 
 ```
