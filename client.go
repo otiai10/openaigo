@@ -5,15 +5,13 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
-	"errors"
 )
-
-
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
 
@@ -75,13 +73,13 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	}
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
-	
+
 	if stream { // support SSE  https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
 		req.Header.Set("Accept", "text/event-stream")
 		req.Header.Set("Cache-Control", "no-cache")
 		req.Header.Set("Connection", "keep-alive")
 	}
-	
+
 	if client.Organization != "" {
 		req.Header.Add("OpenAI-Organization", client.Organization)
 	}
@@ -141,14 +139,14 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	return resp, err
 }
 
-func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, c chan ChatCompletionStreamInfo){
+func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, c chan ChatCompletionStreamInfo) {
 	req, err := client.build(ctx, method, p, body, true)
 	if err != nil {
 		sendData(ChatCompletionStreamResponse{}, err, c)
 		close(c)
 		return
 	}
-	
+
 	if client.HTTPClient == nil {
 		client.HTTPClient = http.DefaultClient
 	}
@@ -159,7 +157,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 		close(c)
 		return
 	}
-	
+
 	reader := bufio.NewReader(resp.Body)
 
 	go func() {
@@ -198,7 +196,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 	}()
 }
 
-func sendData(rsp ChatCompletionStreamResponse, err error, c chan ChatCompletionStreamInfo)  {
-	i := ChatCompletionStreamInfo{rsp, err }
+func sendData(rsp ChatCompletionStreamResponse, err error, c chan ChatCompletionStreamInfo) {
+	i := ChatCompletionStreamInfo{rsp, err}
 	c <- i
 }

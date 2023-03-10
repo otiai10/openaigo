@@ -89,22 +89,21 @@ type ChatMessage struct {
 
 	// Content: A content of the message.
 	Content string `json:"content"`
-
 }
 
 type ChatCompletionType string
 
 const (
-	Completion ChatCompletionType = "chat.completion"
-	CompletionChunk = "chat.completion.chunk"
+	Completion      ChatCompletionType = "chat.completion"
+	CompletionChunk                    = "chat.completion.chunk"
 )
 
 type ChatCompletionResponse struct {
-	ID      string       				`json:"id"`
-	Object  ChatCompletionType       	`json:"object"`
-	Created int64        				`json:"created"`
-	Choices []ChatChoice 				`json:"choices"`
-	Usage   Usage        				`json:"usage"`
+	ID      string             `json:"id"`
+	Object  ChatCompletionType `json:"object"`
+	Created int64              `json:"created"`
+	Choices []ChatChoice       `json:"choices"`
+	Usage   Usage              `json:"usage"`
 }
 
 type ChatChoice struct {
@@ -115,21 +114,21 @@ type ChatChoice struct {
 
 // Stream Object
 type ChatCompletionStreamResponse struct {
-	ID      string       				`json:"id"`
-	Object  ChatCompletionType       	`json:"object"`
-	Created int64        				`json:"created"`
-	Model   string		 				`json:"model"`
-	Choices []ChatStreamChoice 			`json:"choices"`
+	ID      string             `json:"id"`
+	Object  ChatCompletionType `json:"object"`
+	Created int64              `json:"created"`
+	Model   string             `json:"model"`
+	Choices []ChatStreamChoice `json:"choices"`
 }
 
 type ChatStreamChoice struct {
-	Delta ChatStreamDelta 				`json:"delta"`
-	Index int64 						`json:"index"`
-	FinishReason string 				`json:"finish_reason"`
+	Delta        ChatStreamDelta `json:"delta"`
+	Index        int64           `json:"index"`
+	FinishReason string          `json:"finish_reason"`
 }
 
 type ChatStreamDelta struct {
-	Content string 						`json:"content"`
+	Content string `json:"content"`
 }
 
 // chan info
