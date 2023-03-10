@@ -5,13 +5,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+	"errors"
 )
+
+
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
 
@@ -139,10 +141,11 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	return resp, err
 }
 
-func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, callBack func(response ChatCompletionStreamResponse, err error)){
+func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, c chan ChatCompletionStreamInfo){
 	req, err := client.build(ctx, method, p, body, true)
 	if err != nil {
-		callBack(ChatCompletionStreamResponse{}, err)
+		sendData(ChatCompletionStreamResponse{}, err, c)
+		close(c)
 		return
 	}
 	
@@ -151,41 +154,51 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 	}
 
 	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+		sendData(ChatCompletionStreamResponse{}, err, c)
+		close(c)
+		return
+	}
+	
 	reader := bufio.NewReader(resp.Body)
 
-	for {
+	go func() {
+		for {
+			line, err := reader.ReadBytes('\n')
+			if err == io.EOF {
+				sendData(ChatCompletionStreamResponse{}, err, c)
+				close(c)
+				break
+			}
 
-		line, err := reader.ReadBytes('\n')
-		if err == io.EOF {
-			callBack(ChatCompletionStreamResponse{}, err)
-			break
-		}
+			s := string(line)
 
-		s := string(line)
+			if strings.HasPrefix(s, "data: [DONE]") {
+				sendData(ChatCompletionStreamResponse{}, io.EOF, c)
+				close(c)
+				break
+			}
 
-		if strings.HasPrefix(s, "data: [DONE]") {
-			callBack(ChatCompletionStreamResponse{}, io.EOF)
-			break
-		}
+			if strings.HasPrefix(s, "error: ") {
+				sendData(ChatCompletionStreamResponse{}, errors.New(s), c)
+				close(c)
+				break
+			}
 
-		if strings.HasPrefix(s, "error: ") {
-			callBack(ChatCompletionStreamResponse{}, errors.New(s))
-			break
-		}
+			s = strings.TrimPrefix(s, "data: ")
+			s = strings.TrimSpace(s)
 
-		s = strings.TrimPrefix(s, "data: ")
-		s = strings.TrimSpace(s)
-
-
-
-		if len(s) > 0 {
-			v := ChatCompletionStreamResponse{}
-			err = json.Unmarshal([]byte(s), &v)
-			callBack(v, err)
-			if err != nil {
-				fmt.Println(err)
+			if len(s) > 0 {
+				v := ChatCompletionStreamResponse{}
+				err = json.Unmarshal([]byte(s), &v)
+				sendData(v, err, c)
 			}
 		}
 
-	}
+	}()
+}
+
+func sendData(rsp ChatCompletionStreamResponse, err error, c chan ChatCompletionStreamInfo)  {
+	i := ChatCompletionStreamInfo{rsp, err }
+	c <- i
 }

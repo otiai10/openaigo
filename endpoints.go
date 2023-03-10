@@ -203,7 +203,7 @@ func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionReq
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }
 
-func (client *Client) ChatStream(ctx context.Context, body ChatCompletionRequestBody, callBack func(response ChatCompletionStreamResponse, err error))  {
+func (client *Client) ChatStream(ctx context.Context, body ChatCompletionRequestBody, c chan ChatCompletionStreamInfo)  {
 	p := "/chat/completions"
-	callForStream(ctx, client, http.MethodPost, p, body, callBack)
+	callForStream(ctx, client, http.MethodPost, p, body, c)
 }
