@@ -166,7 +166,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 		for {
 			line, err := reader.ReadBytes('\n')
 			if err == io.EOF {
-				sendData(ChatCompletionStreamResponse{}, err, c)
+				sendData(ChatCompletionStreamResponse{}, nil, c)
 				close(c)
 				break
 			}
@@ -174,7 +174,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 			s := string(line)
 
 			if strings.HasPrefix(s, "data: [DONE]") {
-				sendData(ChatCompletionStreamResponse{}, io.EOF, c)
+				sendData(ChatCompletionStreamResponse{}, nil, c)
 				close(c)
 				break
 			}

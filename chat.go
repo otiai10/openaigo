@@ -132,6 +132,7 @@ type ChatStreamDelta struct {
 	Content string 						`json:"content"`
 }
 
+// chan info
 type ChatCompletionStreamInfo struct {
 	Rsp ChatCompletionStreamResponse
 	Err error

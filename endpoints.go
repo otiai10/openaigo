@@ -205,6 +205,9 @@ func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionReq
 	return call(ctx, client, http.MethodPost, p, body, resp)
 }
 
+// ChatStream: POST https://api.openai.com/v1/chat/completion. By Stream
+// Creates a completion for the chat message.
+// See https://platform.openai.com/docs/api-reference/chat/create
 func (client *Client) ChatStream(ctx context.Context, body ChatCompletionRequestBody, c chan ChatCompletionStreamInfo)  {
 	p := "/chat/completions"
 	callForStream(ctx, client, http.MethodPost, p, body, c)
