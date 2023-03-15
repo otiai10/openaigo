@@ -172,7 +172,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 			s := string(line)
 
 			if strings.HasPrefix(s, "data: [DONE]") {
-				sendData(ChatCompletionStreamResponse{}, nil, c)
+				sendData(ChatCompletionStreamResponse{}, io.EOF, c)
 				close(c)
 				break
 			}
