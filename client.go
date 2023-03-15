@@ -139,11 +139,13 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	return resp, err
 }
 
-func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, c chan ChatCompletionStreamInfo) {
+func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, callBack func(info ChatCompletionStreamInfo)) {
 	req, err := client.build(ctx, method, p, body, true)
 	if err != nil {
-		sendData(ChatCompletionStreamResponse{}, err, c)
-		close(c)
+		callBack(ChatCompletionStreamInfo{
+			ChatCompletionStreamResponse{},
+			err,
+		})
 		return
 	}
 
@@ -153,8 +155,10 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 	resp, err := client.HTTPClient.Do(req)
 	if err != nil {
-		sendData(ChatCompletionStreamResponse{}, err, c)
-		close(c)
+		callBack(ChatCompletionStreamInfo{
+			ChatCompletionStreamResponse{},
+			err,
+		})
 		return
 	}
 
@@ -162,24 +166,28 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 	go func() {
 		for {
-			line, err := reader.ReadBytes('\n')
+			s, err := reader.ReadString('\n')
 			if err == io.EOF {
-				sendData(ChatCompletionStreamResponse{}, nil, c)
-				close(c)
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					err,
+				})
 				break
 			}
 
-			s := string(line)
-
-			if strings.HasPrefix(s, "data: [DONE]") {
-				sendData(ChatCompletionStreamResponse{}, io.EOF, c)
-				close(c)
+			if strings.HasPrefix(s, "data: [DONE]") { // end
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					StreamFinish,
+				})
 				break
 			}
 
-			if strings.HasPrefix(s, "error: ") {
-				sendData(ChatCompletionStreamResponse{}, errors.New(s), c)
-				close(c)
+			if strings.HasPrefix(s, "error: ") { // API error
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					errors.New(s),
+				})
 				break
 			}
 
@@ -189,14 +197,11 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 			if len(s) > 0 {
 				v := ChatCompletionStreamResponse{}
 				err = json.Unmarshal([]byte(s), &v)
-				sendData(v, err, c)
+				callBack(ChatCompletionStreamInfo{
+					v,
+					err,
+				})
 			}
 		}
-
 	}()
-}
-
-func sendData(rsp ChatCompletionStreamResponse, err error, c chan ChatCompletionStreamInfo) {
-	i := ChatCompletionStreamInfo{rsp, err}
-	c <- i
 }

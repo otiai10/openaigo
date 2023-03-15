@@ -134,5 +134,5 @@ type ChatStreamDelta struct {
 // chan info
 type ChatCompletionStreamInfo struct {
 	Rsp ChatCompletionStreamResponse
-	Err error
+	Err error // if error is StreamFinish， the message is done
 }
