@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -76,8 +77,8 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 
 	if stream { // support SSE  https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
 		req.Header.Set("Accept", "text/event-stream")
-		req.Header.Set("Cache-Control", "no-cache")
-		req.Header.Set("Connection", "keep-alive")
+		req.Header.Set("Cache-Control", "no-cache, must-revalidate")
+		//req.Header.Set("Connection", "keep-alive")
 	}
 
 	if client.Organization != "" {
@@ -151,10 +152,13 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 	if client.HTTPClient == nil {
 		client.HTTPClient = http.DefaultClient
+		client.HTTPClient.Timeout = 60 * time.Second
 	}
+
 
 	resp, err := client.HTTPClient.Do(req)
 	if err != nil {
+
 		callBack(ChatCompletionStreamInfo{
 			ChatCompletionStreamResponse{},
 			err,
@@ -193,6 +197,7 @@ func callForStream(ctx context.Context, client *Client, method string, p string,
 
 			s = strings.TrimPrefix(s, "data: ")
 			s = strings.TrimSpace(s)
+			fmt.Println(s)
 
 			if len(s) > 0 {
 				v := ChatCompletionStreamResponse{}
