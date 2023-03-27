@@ -1,14 +1,17 @@
 package openaigo
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
@@ -56,7 +59,7 @@ func (client *Client) endpoint(p string) (string, error) {
 	return u.String(), nil
 }
 
-func (client *Client) build(ctx context.Context, method, p string, body interface{}) (req *http.Request, err error) {
+func (client *Client) build(ctx context.Context, method, p string, body interface{}, stream bool) (req *http.Request, err error) {
 	endpoint, err := client.endpoint(p)
 	if err != nil {
 		return nil, err
@@ -71,6 +74,13 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 	}
 	req.Header.Add("Content-Type", contenttype)
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
+
+	if stream { // support SSE  https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
+		req.Header.Set("Accept", "text/event-stream")
+		req.Header.Set("Cache-Control", "no-cache, must-revalidate")
+		//req.Header.Set("Connection", "keep-alive")
+	}
+
 	if client.Organization != "" {
 		req.Header.Add("OpenAI-Organization", client.Organization)
 	}
@@ -122,10 +132,81 @@ func (client *Client) execute(req *http.Request, response interface{}) error {
 }
 
 func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
-	req, err := client.build(ctx, method, p, body)
+	req, err := client.build(ctx, method, p, body, false)
 	if err != nil {
 		return resp, err
 	}
 	err = client.execute(req, &resp)
 	return resp, err
+}
+
+func callForStream(ctx context.Context, client *Client, method string, p string, body interface{}, callBack func(info ChatCompletionStreamInfo)) {
+	req, err := client.build(ctx, method, p, body, true)
+	if err != nil {
+		callBack(ChatCompletionStreamInfo{
+			ChatCompletionStreamResponse{},
+			err,
+		})
+		return
+	}
+
+	if client.HTTPClient == nil {
+		client.HTTPClient = http.DefaultClient
+		client.HTTPClient.Timeout = 60 * time.Second
+	}
+
+
+	resp, err := client.HTTPClient.Do(req)
+	if err != nil {
+
+		callBack(ChatCompletionStreamInfo{
+			ChatCompletionStreamResponse{},
+			err,
+		})
+		return
+	}
+
+	reader := bufio.NewReader(resp.Body)
+
+	go func() {
+		for {
+			s, err := reader.ReadString('\n')
+			if err == io.EOF {
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					err,
+				})
+				break
+			}
+
+			if strings.HasPrefix(s, "data: [DONE]") { // end
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					StreamFinish,
+				})
+				break
+			}
+
+			if strings.HasPrefix(s, "error: ") { // API error
+				callBack(ChatCompletionStreamInfo{
+					ChatCompletionStreamResponse{},
+					errors.New(s),
+				})
+				break
+			}
+
+			s = strings.TrimPrefix(s, "data: ")
+			s = strings.TrimSpace(s)
+			fmt.Println(s)
+
+			if len(s) > 0 {
+				v := ChatCompletionStreamResponse{}
+				err = json.Unmarshal([]byte(s), &v)
+				callBack(ChatCompletionStreamInfo{
+					v,
+					err,
+				})
+			}
+		}
+	}()
 }

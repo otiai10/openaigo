@@ -4,7 +4,6 @@ package openaigo
 // https://platform.openai.com/docs/guides/chat/chat-completions-beta
 // https://platform.openai.com/docs/api-reference/chat
 type ChatCompletionRequestBody struct {
-
 	// Model: ID of the model to use.
 	// Currently, only gpt-3.5-turbo and gpt-3.5-turbo-0301 are supported.
 	Model string `json:"model"`
@@ -92,16 +91,48 @@ type ChatMessage struct {
 	Content string `json:"content"`
 }
 
+type ChatCompletionType string
+
+const (
+	Completion      ChatCompletionType = "chat.completion"
+	CompletionChunk                    = "chat.completion.chunk"
+)
+
 type ChatCompletionResponse struct {
-	ID      string       `json:"id"`
-	Object  string       `json:"object"`
-	Created int64        `json:"created"`
-	Choices []ChatChoice `json:"choices"`
-	Usage   Usage        `json:"usage"`
+	ID      string             `json:"id"`
+	Object  ChatCompletionType `json:"object"`
+	Created int64              `json:"created"`
+	Choices []ChatChoice       `json:"choices"`
+	Usage   Usage              `json:"usage"`
 }
 
 type ChatChoice struct {
 	Index        int         `json:"index"`
 	Message      ChatMessage `json:"message"`
 	FinishReason string      `json:"finish_reason"`
+}
+
+// Stream Object
+type ChatCompletionStreamResponse struct {
+	ID      string             `json:"id"`
+	Object  ChatCompletionType `json:"object"`
+	Created int64              `json:"created"`
+	Model   string             `json:"model"`
+	Choices []ChatStreamChoice `json:"choices"`
+}
+
+type ChatStreamChoice struct {
+	Delta        ChatStreamDelta `json:"delta"`
+	Index        int64           `json:"index"`
+	FinishReason string          `json:"finish_reason"`
+}
+
+type ChatStreamDelta struct {
+	Content string `json:"content"`
+}
+
+// chan info
+type ChatCompletionStreamInfo struct {
+	Rsp ChatCompletionStreamResponse
+	Err error // if error is StreamFinish， the message is done
 }

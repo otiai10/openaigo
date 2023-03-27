@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"errors"
 )
 
 type ErrorResponseBody struct {
@@ -28,3 +30,5 @@ func (client *Client) apiError(res *http.Response) error {
 	}
 	return fmt.Errorf("openai api error: %v", errbody.Error)
 }
+
+var StreamFinish = errors.New("StreamFinish")
