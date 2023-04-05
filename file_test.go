@@ -48,7 +48,7 @@ func TestClient_RetrieveFile(t *testing.T) {
 
 	_, err = client.RetrieveFile(nil, "abc")
 	Expect(t, err).Not().ToBe(nil)
-	Expect(t, err.Error()).ToBe("openai api error: invalid_request_error: No such File object: abc (param: id, code: <nil>)")
+	Expect(t, err.Error()).ToBe("openai API error: invalid_request_error: No such File object: abc (param: id, code: <nil>)")
 
 	_, err = client.RetrieveFile(nil, "zzz")
 	Expect(t, err).Not().ToBe(nil)
