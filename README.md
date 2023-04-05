@@ -91,6 +91,21 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
 
+# Need `stream`?
+
+```go
+client := openaigo.NewClient(OPENAI_API_KEY)
+request := openaigo.ChatCompletionRequestBody{
+  Stream: true,
+  StreamCallback: func(res ChatCompletionResponse, done bool, err error) {
+    // Do what you want!
+    // You might need chan handling here.
+    // See test app how you can do it.
+    // https://github.com/otiai10/openaigo/search?q=chat_completion_stream
+  },
+}
+```
+
 # Need Proxy?
 
 ```go
