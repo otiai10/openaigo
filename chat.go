@@ -39,6 +39,12 @@ type ChatCompletionRequestBody struct {
 	// with the stream terminated by a data: [DONE] message.
 	Stream bool `json:"stream,omitempty"`
 
+	// StreamCallback is a callback funciton to handle stream response.
+	// If provided, this library automatically set `Stream` `true`.
+	// This field is added by github.com/otiai10/openaigo only to handle Stream.
+	// Thus, it is omitted when the client excute HTTP request.
+	StreamCallback func(res ChatCompletionResponse, done bool, err error) `json:"-"`
+
 	// Stop: Up to 4 sequences where the API will stop generating further tokens.
 	// Defaults to null.
 	Stop []string `json:"stop,omitempty"`
@@ -104,4 +110,5 @@ type ChatChoice struct {
 	Index        int         `json:"index"`
 	Message      ChatMessage `json:"message"`
 	FinishReason string      `json:"finish_reason"`
+	Delta        ChatMessage `json:"delta"` // Only appears in stream response
 }

@@ -3,6 +3,7 @@ package openaigo
 import (
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -287,7 +288,18 @@ func testserverV1() *httptest.Server {
 			return
 		}
 		defer f.Close()
-		io.Copy(w, f)
+		body := struct {
+			Stream bool `json:"stream"`
+		}{}
+		json.NewDecoder(req.Body).Decode(&body)
+		if body.Stream {
+			b, _ := ioutil.ReadAll(f)
+			b = append([]byte("data: "), b...)
+			b = append(b, []byte("\n\n\ndata: [DONE]")...)
+			w.Write(b)
+		} else {
+			io.Copy(w, f)
+		}
 	})
 	return httptest.NewServer(mux)
 }
