@@ -41,4 +41,16 @@ const (
 	TextBabbage001 = "text-babbage-001"
 	TextAda001     = "text-ada-001"
 	// }}}
+
+	// {{{ https://platform.openai.com/docs/models/gpt-3-5
+	GPT3_5Turbo      = "gpt-3.5-turbo"
+	GPT3_5Turbo_0301 = "gpt-3.5-turbo--0301"
+	// }}}
+
+	// {{{ https://platform.openai.com/docs/models/gpt-4
+	GPT4          = "gpt-4"
+	GPT4_0314     = "gpt-3-0314"
+	GPT4_32K      = "gpt-4-32k"
+	GPT4_32K_0314 = "gpt-4-32k-0314"
+	// }}}
 )

@@ -69,7 +69,7 @@ var (
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatCompletionRequestBody{
-					Model: "gpt-3.5-turbo",
+					Model: openaigo.GPT3_5Turbo,
 					Messages: []openaigo.ChatMessage{
 						{Role: "user", Content: "Hello!"},
 					},
