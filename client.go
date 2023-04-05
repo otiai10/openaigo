@@ -103,7 +103,7 @@ func (client *Client) bodyToReader(body interface{}) (io.Reader, string, error) 
 	return r, "application/json", nil
 }
 
-func (client *Client) execute(req *http.Request, response interface{}) error {
+func execute[T any](client *Client, req *http.Request, response *T) error {
 	if client.HTTPClient == nil {
 		client.HTTPClient = http.DefaultClient
 	}
@@ -126,6 +126,6 @@ func call[T any](ctx context.Context, client *Client, method string, p string, b
 	if err != nil {
 		return resp, err
 	}
-	err = client.execute(req, &resp)
+	err = execute(client, req, &resp)
 	return resp, err
 }
