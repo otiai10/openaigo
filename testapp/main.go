@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -75,6 +76,45 @@ var (
 					},
 				}
 				return client.Chat(nil, request)
+			},
+		},
+		{
+			Name: "chat_completion_stream",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				data := make(chan openaigo.ChatCompletionResponse)
+				done := make(chan error)
+				defer close(data)
+				defer close(done)
+				calback := func(r openaigo.ChatCompletionResponse, d bool, e error) {
+					if d {
+						done <- e
+					} else {
+						data <- r
+					}
+				}
+				request := openaigo.ChatCompletionRequestBody{
+					Model:          openaigo.GPT3_5Turbo,
+					StreamCallback: calback,
+					Messages: []openaigo.ChatMessage{
+						{
+							Role:    "user",
+							Content: fmt.Sprintf("What are the historical events happend on %s", time.Now().Format("01/02"))},
+					},
+				}
+				res, err := client.ChatCompletion(context.Background(), request)
+				if err != nil {
+					return res, err
+				}
+				for {
+					select {
+					case payload := <-data:
+						fmt.Print(payload.Choices[0].Delta.Content)
+					case err = <-done:
+						fmt.Print("\n")
+						return res, err
+					}
+				}
 			},
 		},
 	}

@@ -12,7 +12,7 @@ import (
 // See https://beta.openai.com/docs/api-reference/models/list
 func (client *Client) ListModels(ctx context.Context) (resp ModelsListResponse, err error) {
 	p := "/models"
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // RetrieveModel: GET /models/{model}
@@ -20,7 +20,7 @@ func (client *Client) ListModels(ctx context.Context) (resp ModelsListResponse, 
 // See https://beta.openai.com/docs/api-reference/models/retrieve
 func (client *Client) RetrieveModel(ctx context.Context, model string) (resp ModelRetrieveResponse, err error) {
 	p := fmt.Sprintf("/models/%s", model)
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // Completion: POST https://api.openai.com/v1/completions
@@ -28,7 +28,7 @@ func (client *Client) RetrieveModel(ctx context.Context, model string) (resp Mod
 // See https://beta.openai.com/docs/api-reference/completions/create
 func (client *Client) Completion(ctx context.Context, body CompletionRequestBody) (resp CompletionResponse, err error) {
 	p := "/completions"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // Edit: POST https://api.openai.com/v1/edits
@@ -36,7 +36,7 @@ func (client *Client) Completion(ctx context.Context, body CompletionRequestBody
 // See https://beta.openai.com/docs/api-reference/edits/create
 func (client *Client) CreateEdit(ctx context.Context, body EditCreateRequestBody) (resp EditCreateResponse, err error) {
 	p := "/edits"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // CreateImage: POST https://api.openai.com/v1/images/generations
@@ -44,12 +44,12 @@ func (client *Client) CreateEdit(ctx context.Context, body EditCreateRequestBody
 // See https://beta.openai.com/docs/api-reference/images/create
 func (client *Client) CreateImage(ctx context.Context, body ImageGenerationRequestBody) (resp ImageGenerationResponse, err error) {
 	p := "/images/generations"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 func (client *Client) EditImage(ctx context.Context, body ImageEditRequestBody) (resp ImageEditResponse, err error) {
 	p := "/images/edits"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // CreateImageVariation: POST https://api.openai.com/v1/images/variations
@@ -57,7 +57,7 @@ func (client *Client) EditImage(ctx context.Context, body ImageEditRequestBody) 
 // See https://beta.openai.com/docs/api-reference/images/create-variation
 func (client *Client) CreateImageVariation(ctx context.Context, body ImageVariationRequestBody) (resp ImageVariationResponse, err error) {
 	p := "/images/variations"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // CreateEmbedding: POST https://api.openai.com/v1/embeddings
@@ -65,7 +65,7 @@ func (client *Client) CreateImageVariation(ctx context.Context, body ImageVariat
 // See https://beta.openai.com/docs/api-reference/embeddings/create
 func (client *Client) CreateEmbedding(ctx context.Context, body EmbeddingCreateRequestBody) (resp EmbeddingCreateResponse, err error) {
 	p := "/embeddings"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // ListFiles: GET https://api.openai.com/v1/files
@@ -73,7 +73,7 @@ func (client *Client) CreateEmbedding(ctx context.Context, body EmbeddingCreateR
 // See https://beta.openai.com/docs/api-reference/files/list
 func (client *Client) ListFiles(ctx context.Context) (resp FileListResponse, err error) {
 	p := "/files"
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // UploadFile: POST https://api.openai.com/v1/files
@@ -83,7 +83,7 @@ func (client *Client) ListFiles(ctx context.Context) (resp FileListResponse, err
 // See https://beta.openai.com/docs/api-reference/files/upload
 func (client *Client) UploadFile(ctx context.Context, body FileUploadRequestBody) (resp FileUploadResponse, err error) {
 	p := "/files"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // DeleteFile: DELETE https://api.openai.com/v1/files/{file_id}
@@ -91,7 +91,7 @@ func (client *Client) UploadFile(ctx context.Context, body FileUploadRequestBody
 // See https://beta.openai.com/docs/api-reference/files/delete
 func (client *Client) DeleteFile(ctx context.Context, id string) (resp FileDeleteResponse, err error) {
 	p := fmt.Sprintf("/files/%s", id)
-	return call(ctx, client, http.MethodDelete, p, nil, resp)
+	return call(ctx, client, http.MethodDelete, p, nil, resp, nil)
 }
 
 // RetrieveFile: GET https://api.openai.com/v1/files/{file_id}
@@ -99,7 +99,7 @@ func (client *Client) DeleteFile(ctx context.Context, id string) (resp FileDelet
 // See https://beta.openai.com/docs/api-reference/files/retrieve
 func (client *Client) RetrieveFile(ctx context.Context, id string) (resp FileRetrieveResponse, err error) {
 	p := fmt.Sprintf("/files/%s", id)
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // RetrieveFileContent: GET https://api.openai.com/v1/files/{file_id}/content
@@ -137,7 +137,7 @@ func (client *Client) RetrieveFileContent(ctx context.Context, id string) (res i
 // See https://beta.openai.com/docs/api-reference/moderations/create
 func (client *Client) CreateModeration(ctx context.Context, body ModerationCreateRequestBody) (resp ModerationCreateResponse, err error) {
 	p := "/moderations"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // CreateFineTune: POST https://api.openai.com/v1/fine-tunes
@@ -147,7 +147,7 @@ func (client *Client) CreateModeration(ctx context.Context, body ModerationCreat
 // See https://beta.openai.com/docs/api-reference/fine-tunes/create
 func (client *Client) CreateFineTune(ctx context.Context, body FineTuneCreateRequestBody) (resp FineTuneCreateResponse, err error) {
 	p := "/fine-tunes"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // ListFineTunes: GET https://api.openai.com/v1/fine-tunes
@@ -155,7 +155,7 @@ func (client *Client) CreateFineTune(ctx context.Context, body FineTuneCreateReq
 // See https://beta.openai.com/docs/api-reference/fine-tunes/list
 func (client *Client) ListFineTunes(ctx context.Context) (resp FineTuneListResponse, err error) {
 	p := "/fine-tunes"
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // RetrieveFineTune: GET https://api.openai.com/v1/fine-tunes/{fine_tune_id}
@@ -164,7 +164,7 @@ func (client *Client) ListFineTunes(ctx context.Context) (resp FineTuneListRespo
 // See https://beta.openai.com/docs/api-reference/fine-tunes/retrieve
 func (client *Client) RetrieveFineTune(ctx context.Context, id string) (resp FineTuneRetrieveResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s", id)
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // CancelFineTune: POST https://api.openai.com/v1/fine-tunes/{fine_tune_id}/cancel
@@ -172,7 +172,7 @@ func (client *Client) RetrieveFineTune(ctx context.Context, id string) (resp Fin
 // See https://beta.openai.com/docs/api-reference/fine-tunes/cancel
 func (client *Client) CancelFineTune(ctx context.Context, id string) (resp FineTuneCancelResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s/cancel", id)
-	return call(ctx, client, http.MethodPost, p, nil, resp)
+	return call(ctx, client, http.MethodPost, p, nil, resp, nil)
 }
 
 // ListFineTuneEvents: GET https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events
@@ -180,7 +180,7 @@ func (client *Client) CancelFineTune(ctx context.Context, id string) (resp FineT
 // See https://beta.openai.com/docs/api-reference/fine-tunes/events
 func (client *Client) ListFineTuneEvents(ctx context.Context, id string) (resp FineTuneListEventsResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s/events", id)
-	return call(ctx, client, http.MethodGet, p, nil, resp)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // DeleteFineTuneModel: DELETE https://api.openai.com/v1/models/{model}
@@ -188,7 +188,7 @@ func (client *Client) ListFineTuneEvents(ctx context.Context, id string) (resp F
 // See https://beta.openai.com/docs/api-reference/fine-tunes/delete-model
 func (client *Client) DeleteFineTuneModel(ctx context.Context, id string) (resp FineTuneDeleteModelResponse, err error) {
 	p := fmt.Sprintf("/models/%s", id)
-	return call(ctx, client, http.MethodDelete, p, nil, resp)
+	return call(ctx, client, http.MethodDelete, p, nil, resp, nil)
 }
 
 // Chat, short-hand of ChatCompletion.
@@ -197,10 +197,14 @@ func (client *Client) Chat(ctx context.Context, body ChatCompletionRequestBody) 
 	return client.ChatCompletion(ctx, body)
 }
 
-// ChatCompletion: POST https://api.openai.com/v1/chat/completion
+// ChatCompletion: POST https://api.openai.com/v1/chat/completions
 // Creates a completion for the chat message.
 // See https://platform.openai.com/docs/api-reference/chat/create
 func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionRequestBody) (resp ChatCompletionResponse, err error) {
 	p := "/chat/completions"
-	return call(ctx, client, http.MethodPost, p, body, resp)
+	if body.StreamCallback != nil {
+		body.Stream = true // Nosy ;)
+		return call(ctx, client, http.MethodPost, p, body, resp, body.StreamCallback)
+	}
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }

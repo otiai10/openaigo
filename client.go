@@ -1,6 +1,7 @@
 package openaigo
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/json"
@@ -31,6 +32,14 @@ type Client struct {
 	// If nil, *http.DefaultClient will be used.
 	HTTPClient *http.Client
 }
+
+type callback[T any] func(response T, done bool, err error)
+
+var (
+	StreamPrefixDATA  = []byte("data: ")
+	StreamPrefixERROR = []byte("error: ")
+	StreamDataDONE    = []byte("[DONE]")
+)
 
 func NewClient(apikey string) *Client {
 	return &Client{
@@ -103,7 +112,7 @@ func (client *Client) bodyToReader(body interface{}) (io.Reader, string, error) 
 	return r, "application/json", nil
 }
 
-func execute[T any](client *Client, req *http.Request, response *T) error {
+func execute[T any](client *Client, req *http.Request, response *T, cb callback[T]) error {
 	if client.HTTPClient == nil {
 		client.HTTPClient = http.DefaultClient
 	}
@@ -111,21 +120,58 @@ func execute[T any](client *Client, req *http.Request, response *T) error {
 	if err != nil {
 		return err
 	}
-	defer httpres.Body.Close()
 	if httpres.StatusCode >= 400 {
+		defer httpres.Body.Close()
 		return client.apiError(httpres)
 	}
+	if cb != nil {
+		go listen(httpres, cb)
+		return nil
+	}
+	defer httpres.Body.Close()
 	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
 		return fmt.Errorf("failed to decode response to %T: %v", response, err)
 	}
 	return nil
 }
 
-func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T) (T, error) {
+// https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
+func listen[T any](res *http.Response, cb callback[T]) {
+	defer res.Body.Close()
+	scanner := bufio.NewScanner(res.Body)
+	for scanner.Scan() {
+		var entry T
+		b := scanner.Bytes()
+		switch {
+		case len(b) == 0:
+			continue
+		case bytes.HasPrefix(b, StreamPrefixDATA):
+			if bytes.HasSuffix(b, StreamDataDONE) {
+				cb(entry, true, nil)
+				return
+			}
+			if err := json.Unmarshal(b[len(StreamPrefixDATA):], &entry); err != nil {
+				cb(entry, true, err)
+				return
+			}
+			cb(entry, false, nil)
+			// TODO: Any error case?
+			// case bytes.HasPrefix(b, StreamPrefixERROR):
+			// 	cb(entry, true, fmt.Errorf(string(b)))
+			// 	return
+			// TODO: Any other case?
+			// default:
+			// 	cb(entry, true, fmt.Errorf(string(b)))
+			// 	return
+		}
+	}
+}
+
+func call[T any](ctx context.Context, client *Client, method string, p string, body interface{}, resp T, cb callback[T]) (T, error) {
 	req, err := client.build(ctx, method, p, body)
 	if err != nil {
 		return resp, err
 	}
-	err = execute(client, req, &resp)
+	err = execute(client, req, &resp, cb)
 	return resp, err
 }
