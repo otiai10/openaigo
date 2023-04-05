@@ -16,6 +16,10 @@ type Scenario struct {
 	Run  func() (any, error)
 }
 
+const (
+	SKIP = "\033[0;33m====> SKIP\033[0m\n\n"
+)
+
 var (
 	OPENAI_API_KEY string
 
@@ -73,6 +77,20 @@ var (
 					Model: openaigo.GPT3_5Turbo,
 					Messages: []openaigo.ChatMessage{
 						{Role: "user", Content: "Hello!"},
+					},
+				}
+				return client.Chat(nil, request)
+			},
+		},
+		{
+			// https://platform.openai.com/docs/models/gpt-4
+			Name: "[SKIP] chat_completion_GPT4",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				request := openaigo.ChatCompletionRequestBody{
+					Model: openaigo.GPT4,
+					Messages: []openaigo.ChatMessage{
+						{Role: "user", Content: "Who are you?"},
 					},
 				}
 				return client.Chat(nil, request)
@@ -142,9 +160,13 @@ func main() {
 	errors := []error{}
 	for i, scenario := range scenarios {
 		fmt.Printf("\033[1;34m[%03d] %s\033[0m\n", i+1, scenario.Name)
+		if strings.HasPrefix(scenario.Name, "[SKIP]") {
+			fmt.Print(SKIP)
+			continue
+		}
 		if match != "" {
 			if !strings.Contains(scenario.Name, match) && !strings.Contains(fmt.Sprintf("%d", i), match) {
-				fmt.Printf("====> Skip\n\n")
+				fmt.Print(SKIP)
 				continue
 			}
 		}
