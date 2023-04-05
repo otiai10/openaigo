@@ -15,84 +15,98 @@ type Scenario struct {
 	Run  func() (any, error)
 }
 
-var OPENAI_API_KEY string
+var (
+	OPENAI_API_KEY string
 
-var scenarios = []Scenario{
-	{
-		Name: "completion",
-		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_API_KEY)
-			request := openaigo.CompletionRequestBody{
-				Model:  "text-davinci-003",
-				Prompt: []string{"Say this is a test"},
-			}
-			return client.Completion(nil, request)
+	scenarios = []Scenario{
+		{
+			Name: "completion",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				request := openaigo.CompletionRequestBody{
+					Model:  "text-davinci-003",
+					Prompt: []string{"Say this is a test"},
+				}
+				return client.Completion(nil, request)
+			},
 		},
-	},
-	{
-		Name: "image_edit",
-		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_API_KEY)
-			f, err := os.Open("./testdata/baby-sea-otter.png")
-			if err != nil {
-				return nil, err
-			}
-			defer f.Close()
-			request := openaigo.ImageEditRequestBody{
-				Image:  f,
-				Prompt: "A cute baby sea otter with big cheese",
-				Size:   openaigo.Size256,
-			}
-			return client.EditImage(nil, request)
+		{
+			Name: "image_edit",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				f, err := os.Open("./testdata/baby-sea-otter.png")
+				if err != nil {
+					return nil, err
+				}
+				defer f.Close()
+				request := openaigo.ImageEditRequestBody{
+					Image:  f,
+					Prompt: "A cute baby sea otter with big cheese",
+					Size:   openaigo.Size256,
+				}
+				return client.EditImage(nil, request)
+			},
 		},
-	},
-	{
-		Name: "image_variation",
-		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_API_KEY)
-			f, err := os.Open("./testdata/baby-sea-otter.png")
-			if err != nil {
-				return nil, err
-			}
-			defer f.Close()
-			request := openaigo.ImageVariationRequestBody{
-				Image: f,
-				Size:  openaigo.Size256,
-			}
-			return client.CreateImageVariation(nil, request)
+		{
+			Name: "image_variation",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				f, err := os.Open("./testdata/baby-sea-otter.png")
+				if err != nil {
+					return nil, err
+				}
+				defer f.Close()
+				request := openaigo.ImageVariationRequestBody{
+					Image: f,
+					Size:  openaigo.Size256,
+				}
+				return client.CreateImageVariation(nil, request)
 
+			},
 		},
-	},
-	{
-		Name: "chat_completion",
-		Run: func() (any, error) {
-			client := openaigo.NewClient(OPENAI_API_KEY)
-			request := openaigo.ChatCompletionRequestBody{
-				Model: "gpt-3.5-turbo",
-				Messages: []openaigo.ChatMessage{
-					{Role: "user", Content: "Hello!"},
-				},
-			}
-			return client.Chat(nil, request)
+		{
+			Name: "chat_completion",
+			Run: func() (any, error) {
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				request := openaigo.ChatCompletionRequestBody{
+					Model: "gpt-3.5-turbo",
+					Messages: []openaigo.ChatMessage{
+						{Role: "user", Content: "Hello!"},
+					},
+				}
+				return client.Chat(nil, request)
+			},
 		},
-	},
-}
+	}
+
+	list bool
+)
 
 func init() {
+	flag.BoolVar(&list, "list", false, "List up all names of scenario")
 	flag.Parse()
 	OPENAI_API_KEY = os.Getenv("OPENAI_API_KEY")
 }
 
 func main() {
+
+	if list {
+		for i, scenario := range scenarios {
+			fmt.Printf("% 2d %s\n", i, scenario.Name)
+		}
+		return
+	}
 	match := flag.Arg(0)
 	total := 0
 	var dur time.Duration = 0
 	errors := []error{}
 	for i, scenario := range scenarios {
 		fmt.Printf("\033[1;34m[%03d] %s\033[0m\n", i+1, scenario.Name)
-		if match != "" && !strings.Contains(scenario.Name, match) {
-			fmt.Printf("====> Skip\n\n")
-			continue
+		if match != "" {
+			if !strings.Contains(scenario.Name, match) && !strings.Contains(fmt.Sprintf("%d", i), match) {
+				fmt.Printf("====> Skip\n\n")
+				continue
+			}
 		}
 		begin := time.Now()
 		res, err := scenario.Run()
