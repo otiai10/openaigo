@@ -112,8 +112,19 @@ func main() {
 		res, err := scenario.Run()
 		elapsed := time.Since(begin)
 		if err != nil {
-			fmt.Printf("\033[31mError:\033[0m %v\nTime: ", err)
+			fmt.Printf("\033[31mError:\033[0m %+v\n", err)
+			if e, ok := err.(openaigo.APIError); ok {
+				fmt.Println("++++++++++++++++++++++")
+				// fmt.Println("StatusCode:", e.StatusCode)
+				fmt.Println("Status:    ", e.Status)
+				fmt.Println("Type:      ", e.Type)
+				fmt.Println("Message:   ", e.Message)
+				fmt.Println("Code:      ", e.Code)
+				fmt.Println("Param:     ", e.Param)
+				fmt.Println("++++++++++++++++++++++")
+			}
 			errors = append(errors, err)
+			fmt.Print("Time: ")
 		} else {
 			fmt.Printf("%+v\n\033[32mTime:\033[0m ", res)
 		}
