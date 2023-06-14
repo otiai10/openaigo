@@ -43,14 +43,19 @@ const (
 	// }}}
 
 	// {{{ https://platform.openai.com/docs/models/gpt-3-5
-	GPT3_5Turbo      = "gpt-3.5-turbo"
-	GPT3_5Turbo_0301 = "gpt-3.5-turbo--0301"
+	GPT3_5Turbo          = "gpt-3.5-turbo"
+	GPT3_5Turbo_0301     = "gpt-3.5-turbo-0301"
+	GPT3_5Turbo_0613     = "gpt-3.5-turbo-0613"
+	GPT3_5Turbo_16K      = "gpt-3.5-turbo-16k"
+	GPT3_5Turbo_16K_0613 = "gpt-3.5-turbo-16k-0613"
 	// }}}
 
 	// {{{ https://platform.openai.com/docs/models/gpt-4
 	GPT4          = "gpt-4"
-	GPT4_0314     = "gpt-3-0314"
+	GPT4_0314     = "gpt-4-0314"
+	GPT4_0613     = "gpt-4-0613"
 	GPT4_32K      = "gpt-4-32k"
 	GPT4_32K_0314 = "gpt-4-32k-0314"
+	GPT4_32K_0613 = "gpt-4-32k-0613"
 	// }}}
 )
