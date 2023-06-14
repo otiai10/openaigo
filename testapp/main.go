@@ -29,7 +29,7 @@ var (
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.CompletionRequestBody{
-					Model:  "text-davinci-003",
+					Model:  openaigo.TextDavinci003,
 					Prompt: []string{"Say this is a test"},
 				}
 				return client.Completion(nil, request)
@@ -112,7 +112,7 @@ var (
 					}
 				}
 				request := openaigo.ChatCompletionRequestBody{
-					Model:          openaigo.GPT3_5Turbo,
+					Model:          openaigo.GPT3_5Turbo_0613,
 					StreamCallback: calback,
 					Messages: []openaigo.ChatMessage{
 						{
