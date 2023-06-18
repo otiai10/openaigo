@@ -1,6 +1,6 @@
 package openaigo
 
-type Choice struct {
+type CompletionChoice struct {
 	Text         string `json:"text"`
 	Index        int    `json:"index"`
 	LogProbs     int    `json:"logprobs"`

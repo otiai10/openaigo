@@ -73,9 +73,9 @@ var (
 			Name: "chat_completion",
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
-				request := openaigo.ChatCompletionRequestBody{
+				request := openaigo.ChatRequest{
 					Model: openaigo.GPT3_5Turbo,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{Role: "user", Content: "Hello!"},
 					},
 				}
@@ -87,9 +87,9 @@ var (
 			Name: "[SKIP] chat_completion_GPT4",
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
-				request := openaigo.ChatCompletionRequestBody{
+				request := openaigo.ChatRequest{
 					Model: openaigo.GPT4,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{Role: "user", Content: "Who are you?"},
 					},
 				}
@@ -114,7 +114,7 @@ var (
 				request := openaigo.ChatCompletionRequestBody{
 					Model:          openaigo.GPT3_5Turbo_0613,
 					StreamCallback: calback,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{
 							Role:    "user",
 							Content: fmt.Sprintf("What are the historical events happend on %s", time.Now().Format("01/02"))},
@@ -133,6 +133,45 @@ var (
 						return res, err
 					}
 				}
+			},
+		},
+
+		// Test case using "function_call"
+		{
+			Name: "function_call",
+			Run: func() (any, error) {
+				conversation := []openaigo.Message{
+					{Role: "user", Content: "What's the weather in Tokyo today?"},
+				}
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				request := openaigo.ChatRequest{
+					Model:    openaigo.GPT3_5Turbo_0613,
+					Messages: conversation,
+					Functions: []openaigo.Function{
+						{
+							Name:        "get_weather",
+							Description: "A function to get weather information",
+							Parameters: openaigo.Parameters{
+								Type: "object",
+								Properties: map[string]map[string]any{
+									"location": {"type": "string"},
+									"date":     {"type": "string", "description": "ISO 8601 date string"},
+								},
+								Required: []string{"location"},
+							},
+						},
+					},
+				}
+				res0, err := client.Chat(nil, request)
+				conversation = append(conversation, res0.Choices[0].Message)
+				conversation = append(conversation, openaigo.Message{
+					Role:    "function",
+					Name:    "get_weather",
+					Content: "20%:thunderstorm,70%:sandstorm,10%:snowy",
+				})
+				request.Messages = conversation
+				res, err := client.Chat(nil, request)
+				return res, err
 			},
 		},
 	}
