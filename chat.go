@@ -78,6 +78,24 @@ type ChatCompletionRequestBody struct {
 	// User: A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. Learn more.
 	// https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids
 	User string `json:"user,omitempty"`
+
+	// Functions: A list of functions which GPT is allowed to request to call.
+	Functions []Function `json:"functions,omitempty"`
+
+	// FunctionCall: You ain't need it. Default is "auto".
+	FunctionCall string `json:"function_call,omitempty"`
+}
+
+type Function struct {
+	Name        string     `json:"name,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Parameters  Parameters `json:"parameters,omitempty"`
+}
+
+type Parameters struct {
+	Type       string                    `json:"type,omitempty"` // Must be "object"
+	Properties map[string]map[string]any `json:"properties,omitempty"`
+	Required   []string                  `json:"required,omitempty"`
 }
 
 // ChatRequest is just an alias of ChatCompletionRequestBody.
@@ -88,6 +106,7 @@ type ChatRequest ChatCompletionRequestBody
 // where each object has a role (either “system”, “user”, or “assistant”)
 // and content (the content of the message).
 // Conversations can be as short as 1 message or fill many pages.
+// See https://platform.openai.com/docs/api-reference/chat/create#chat/create-messages
 type Message struct {
 
 	// Role: Either of "system", "user", "assistant".
@@ -99,7 +118,28 @@ type Message struct {
 
 	// Content: A content of the message.
 	Content string `json:"content"`
+
+	// FunctionCall requested by ChatGPT.
+	// Only appears in a response from ChatGPT in which ChatGPT wants to call a function.
+	FunctionCall *FunctionCall `json:"function_call,omitempty"`
+
+	// Name of the function called, to tell this message is a result of function_call.
+	// Only appears in a request from us when the previous message is "function_call" requested by ChatGPT.
+	Name string `json:"name,omitempty"`
 }
+
+type FunctionCall struct {
+	Name         string `json:"name,omitempty"`
+	ArgumentsRaw string `json:"arguments,omitempty"`
+	// Arguments map[string]any `json:"arguments,omitempty"`
+}
+
+// func Arg[T any](fc FunctionCall, name string) (res T) {
+// 	if fc.Arguments == nil || fc.Arguments[name] == nil {
+// 		return
+// 	}
+// 	return fc.Arguments[name].(T)
+// }
 
 type ChatCompletionResponse struct {
 	ID      string   `json:"id"`

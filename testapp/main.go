@@ -135,6 +135,45 @@ var (
 				}
 			},
 		},
+
+		// Test case using "function_call"
+		{
+			Name: "function_call",
+			Run: func() (any, error) {
+				conversation := []openaigo.Message{
+					{Role: "user", Content: "What's the weather in Tokyo today?"},
+				}
+				client := openaigo.NewClient(OPENAI_API_KEY)
+				request := openaigo.ChatRequest{
+					Model:    openaigo.GPT3_5Turbo_0613,
+					Messages: conversation,
+					Functions: []openaigo.Function{
+						{
+							Name:        "get_weather",
+							Description: "A function to get weather information",
+							Parameters: openaigo.Parameters{
+								Type: "object",
+								Properties: map[string]map[string]any{
+									"location": {"type": "string"},
+									"date":     {"type": "string", "description": "ISO 8601 date string"},
+								},
+								Required: []string{"location"},
+							},
+						},
+					},
+				}
+				res0, err := client.Chat(nil, request)
+				conversation = append(conversation, res0.Choices[0].Message)
+				conversation = append(conversation, openaigo.Message{
+					Role:    "function",
+					Name:    "get_weather",
+					Content: "20%:thunderstorm,70%:sandstorm,10%:snowy",
+				})
+				request.Messages = conversation
+				res, err := client.Chat(nil, request)
+				return res, err
+			},
+		},
 	}
 
 	list bool

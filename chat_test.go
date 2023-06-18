@@ -34,3 +34,34 @@ func TestClient_ChatCompletion_Stream(t *testing.T) {
 	Expect(t, res).TypeOf("openaigo.ChatCompletionResponse")
 	wg.Wait()
 }
+
+func TestClient_ChatCompletion_FunctionCall(t *testing.T) {
+	client := NewClient("")
+	client.BaseURL = mockserver.URL
+	res, err := client.Chat(nil, ChatRequest{
+		Model: GPT3_5Turbo,
+		Messages: []Message{
+			{
+				Role: "user", Content: "Hello, I'm John.",
+			},
+		},
+		Functions: []Function{
+			{
+				Name: "test_method",
+				Parameters: Parameters{
+					Type: "object",
+					Properties: map[string]map[string]any{
+						"arg_0": {
+							"type":        "string",
+							"description": "This is a test",
+						},
+					},
+					Required: []string{"arg_0"},
+				},
+			},
+		},
+		FunctionCall: "auto",
+	})
+	Expect(t, err).ToBe(nil)
+	Expect(t, res).TypeOf("openaigo.ChatCompletionResponse")
+}
