@@ -73,9 +73,9 @@ var (
 			Name: "chat_completion",
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
-				request := openaigo.ChatCompletionRequestBody{
+				request := openaigo.ChatRequest{
 					Model: openaigo.GPT3_5Turbo,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{Role: "user", Content: "Hello!"},
 					},
 				}
@@ -87,9 +87,9 @@ var (
 			Name: "[SKIP] chat_completion_GPT4",
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
-				request := openaigo.ChatCompletionRequestBody{
+				request := openaigo.ChatRequest{
 					Model: openaigo.GPT4,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{Role: "user", Content: "Who are you?"},
 					},
 				}
@@ -114,7 +114,7 @@ var (
 				request := openaigo.ChatCompletionRequestBody{
 					Model:          openaigo.GPT3_5Turbo_0613,
 					StreamCallback: calback,
-					Messages: []openaigo.ChatMessage{
+					Messages: []openaigo.Message{
 						{
 							Role:    "user",
 							Content: fmt.Sprintf("What are the historical events happend on %s", time.Now().Format("01/02"))},

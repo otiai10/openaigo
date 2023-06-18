@@ -89,10 +89,10 @@ type CompletionRequestBody struct {
 }
 
 type CompletionResponse struct {
-	ID      string     `json:"id"`
-	Object  ObjectType `json:"object"`
-	Created int64      `json:"created"`
-	Model   string     `json:"model"`
-	Choices []Choice   `json:"choices"`
+	ID      string             `json:"id"`
+	Object  ObjectType         `json:"object"`
+	Created int64              `json:"created"`
+	Model   string             `json:"model"`
+	Choices []CompletionChoice `json:"choices"`
 	Usage   Usage
 }

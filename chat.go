@@ -15,7 +15,7 @@ type ChatCompletionRequestBody struct {
 	// In the example above, the user’s final question of “Where was it played?” only makes sense in the context of the prior messages about the World Series of 2020.
 	// Because the models have no memory of past requests, all relevant information must be supplied via the conversation.
 	// If a conversation cannot fit within the model’s token limit, it will need to be shortened in some way.
-	Messages []ChatMessage `json:"messages"`
+	Messages []Message `json:"messages"`
 
 	// Temperature: What sampling temperature to use, between 0 and 2.
 	// Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -80,12 +80,15 @@ type ChatCompletionRequestBody struct {
 	User string `json:"user,omitempty"`
 }
 
-// ChatMessage: An element of messages parameter.
+// ChatRequest is just an alias of ChatCompletionRequestBody.
+type ChatRequest ChatCompletionRequestBody
+
+// Message: An element of messages parameter.
 // The main input is the messages parameter. Messages must be an array of message objects,
 // where each object has a role (either “system”, “user”, or “assistant”)
 // and content (the content of the message).
 // Conversations can be as short as 1 message or fill many pages.
-type ChatMessage struct {
+type Message struct {
 
 	// Role: Either of "system", "user", "assistant".
 	// Typically, a conversation is formatted with a system message first, followed by alternating user and assistant messages.
@@ -99,16 +102,16 @@ type ChatMessage struct {
 }
 
 type ChatCompletionResponse struct {
-	ID      string       `json:"id"`
-	Object  string       `json:"object"`
-	Created int64        `json:"created"`
-	Choices []ChatChoice `json:"choices"`
-	Usage   Usage        `json:"usage"`
+	ID      string   `json:"id"`
+	Object  string   `json:"object"`
+	Created int64    `json:"created"`
+	Choices []Choice `json:"choices"`
+	Usage   Usage    `json:"usage"`
 }
 
-type ChatChoice struct {
-	Index        int         `json:"index"`
-	Message      ChatMessage `json:"message"`
-	FinishReason string      `json:"finish_reason"`
-	Delta        ChatMessage `json:"delta"` // Only appears in stream response
+type Choice struct {
+	Index        int     `json:"index"`
+	Message      Message `json:"message"`
+	FinishReason string  `json:"finish_reason"`
+	Delta        Message `json:"delta"` // Only appears in stream response
 }
