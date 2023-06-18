@@ -51,6 +51,8 @@ cd openaigo
 OPENAI_API_KEY=YourAPIKey go run ./testapp/main.go
 ```
 
+See [test app](https://github.com/otiai10/openaigo/blob/main/testapp/main.go) as a working example.
+
 # API Keys?
 
 Visit https://beta.openai.com/account/api-keys and you can create your own API key to get started [for free](https://openai.com/api/pricing/).
@@ -62,8 +64,9 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
   - [x] [Retrieve model](https://beta.openai.com/docs/api-reference/models/retrieve)
 - Text Completions
   - [x] [Create completion](https://beta.openai.com/docs/api-reference/completions/create)
-- **Chat Completions** <- NEW!
+- **Chat Completions**
   - [x] [Create Chat Completions](https://platform.openai.com/docs/api-reference/chat/create)
+    - [x] [with function_call](https://openai.com/blog/function-calling-and-other-api-updates) <- New
 - Edits
   - [x] [Create edits](https://beta.openai.com/docs/api-reference/edits/create)
 - Images
@@ -91,11 +94,36 @@ Visit https://beta.openai.com/account/api-keys and you can create your own API k
   - ~~[List engines](https://beta.openai.com/docs/api-reference/engines/list)~~
   - ~~[Retrieve engine](https://beta.openai.com/docs/api-reference/engines/retrieve)~~
 
+# Need `function_call`?
+
+```go
+request := openaigo.ChatRequest{
+  Messages: []openaigo.Message{
+    {Role: "user", Content: "How's the weather today in Tokyo?"},
+  },
+  Functions: []openaigo.Function{
+    {
+      Name: "get_weather",
+      Parameters: openaigo.Parameters{
+        Type:       "object",
+        Properties: map[string]map[string]any{
+          "location": {"type": "string"},
+          "date":     {"type": "string", "description": "ISO 8601 date string"},
+        },
+        Required: []string{"location"},
+      },
+    }
+  },
+}
+```
+
+See [test app](https://github.com/otiai10/openaigo/blob/main/testapp/main.go) as a working example.
+
 # Need `stream`?
 
 ```go
 client := openaigo.NewClient(OPENAI_API_KEY)
-request := openaigo.ChatCompletionRequestBody{
+request := openaigo.ChatRequest{
   Stream: true,
   StreamCallback: func(res ChatCompletionResponse, done bool, err error) {
     // Do what you want!
