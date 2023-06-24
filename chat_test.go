@@ -45,7 +45,7 @@ func TestClient_ChatCompletion_FunctionCall(t *testing.T) {
 				Role: "user", Content: "Hello, I'm John.",
 			},
 		},
-		Functions: []Function{
+		Functions: Functions{
 			{
 				Name: "test_method",
 				Parameters: Parameters{

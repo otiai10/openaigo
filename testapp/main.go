@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/otiai10/openaigo"
+	fc "github.com/otiai10/openaigo/functioncall"
 )
 
 type Scenario struct {
@@ -19,6 +20,10 @@ type Scenario struct {
 const (
 	SKIP = "\033[0;33m====> SKIP\033[0m\n\n"
 )
+
+func GetWeather(location string, date int) (string, error) {
+	return "sunny", nil
+}
 
 var (
 	OPENAI_API_KEY string
@@ -141,25 +146,17 @@ var (
 			Name: "function_call",
 			Run: func() (any, error) {
 				conversation := []openaigo.Message{
-					{Role: "user", Content: "What's the weather in Tokyo today?"},
+					{Role: "user", Content: "Should I bring an umbrella tomorrow?"},
 				}
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
 					Model:    openaigo.GPT3_5Turbo_0613,
 					Messages: conversation,
-					Functions: []openaigo.Function{
-						{
-							Name:        "get_weather",
-							Description: "A function to get weather information",
-							Parameters: openaigo.Parameters{
-								Type: "object",
-								Properties: map[string]map[string]any{
-									"location": {"type": "string"},
-									"date":     {"type": "string", "description": "ISO 8601 date string"},
-								},
-								Required: []string{"location"},
-							},
-						},
+					Functions: fc.Funcs{
+						"get_weather": fc.Func{GetWeather, "A function to get weather information", fc.Params{
+							{"location", "string", "location of the wather", true},
+							{"date", "number", "date MMDD as number", true},
+						}},
 					},
 				}
 				res0, err := client.Chat(nil, request)
