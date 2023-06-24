@@ -64,14 +64,3 @@ func As[T any](funcs Funcs) (dest T) {
 	}
 	return dest
 }
-
-func (funcs Funcs) Decode(dest any) {
-	b, err := funcs.MarshalJSON()
-	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal(b, dest)
-	if err != nil {
-		panic(err)
-	}
-}

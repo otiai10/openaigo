@@ -141,9 +141,19 @@ type Message struct {
 }
 
 type FunctionCall struct {
-	Name         string `json:"name,omitempty"`
+	NameRaw      string `json:"name,omitempty"`
 	ArgumentsRaw string `json:"arguments,omitempty"`
 	// Arguments map[string]any `json:"arguments,omitempty"`
+}
+
+func (fc *FunctionCall) Name() string {
+	return fc.NameRaw
+}
+
+func (fc *FunctionCall) Args() map[string]any {
+	var args map[string]any
+	json.Unmarshal([]byte(fc.ArgumentsRaw), &args)
+	return args
 }
 
 type ChatCompletionResponse struct {
