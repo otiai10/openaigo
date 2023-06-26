@@ -1,5 +1,7 @@
 package openaigo
 
+import "encoding/json"
+
 // ChatCompletionRequestBody:
 // https://platform.openai.com/docs/guides/chat/chat-completions-beta
 // https://platform.openai.com/docs/api-reference/chat
@@ -80,10 +82,20 @@ type ChatCompletionRequestBody struct {
 	User string `json:"user,omitempty"`
 
 	// Functions: A list of functions which GPT is allowed to request to call.
-	Functions []Function `json:"functions,omitempty"`
+	// Functions []Function `json:"functions,omitempty"`
+	Functions json.Marshaler `json:"functions,omitempty"`
 
 	// FunctionCall: You ain't need it. Default is "auto".
 	FunctionCall string `json:"function_call,omitempty"`
+}
+
+type Functions []Function
+
+func (funcs Functions) MarshalJSON() ([]byte, error) {
+	if len(funcs) == 0 {
+		return []byte("[]"), nil
+	}
+	return json.Marshal([]Function(funcs))
 }
 
 type Function struct {
@@ -129,17 +141,20 @@ type Message struct {
 }
 
 type FunctionCall struct {
-	Name         string `json:"name,omitempty"`
+	NameRaw      string `json:"name,omitempty"`
 	ArgumentsRaw string `json:"arguments,omitempty"`
 	// Arguments map[string]any `json:"arguments,omitempty"`
 }
 
-// func Arg[T any](fc FunctionCall, name string) (res T) {
-// 	if fc.Arguments == nil || fc.Arguments[name] == nil {
-// 		return
-// 	}
-// 	return fc.Arguments[name].(T)
-// }
+func (fc *FunctionCall) Name() string {
+	return fc.NameRaw
+}
+
+func (fc *FunctionCall) Args() map[string]any {
+	var args map[string]any
+	json.Unmarshal([]byte(fc.ArgumentsRaw), &args)
+	return args
+}
 
 type ChatCompletionResponse struct {
 	ID      string   `json:"id"`

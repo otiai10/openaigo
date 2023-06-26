@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/otiai10/openaigo"
+	fc "github.com/otiai10/openaigo/functioncall"
 )
 
 type Scenario struct {
@@ -19,6 +20,15 @@ type Scenario struct {
 const (
 	SKIP = "\033[0;33m====> SKIP\033[0m\n\n"
 )
+
+func GetWeather(location string, date float64) (string, error) {
+	return "sunny", nil
+}
+
+func GetDate() int {
+	now := time.Now()
+	return now.Year()*10000 + int(now.Month())*100 + now.Day()
+}
 
 var (
 	OPENAI_API_KEY string
@@ -141,37 +151,51 @@ var (
 			Name: "function_call",
 			Run: func() (any, error) {
 				conversation := []openaigo.Message{
-					{Role: "user", Content: "What's the weather in Tokyo today?"},
+					{Role: "user", Content: "Should I bring an umbrella tomorrow? I'm living around Tokyo."},
+				}
+				funcs := fc.Funcs{
+					"GetDate": fc.Func{GetDate, "A function to get date today", fc.Params{}},
+					"GetWeather": fc.Func{GetWeather, "A function to get weather information", fc.Params{
+						{"location", "string", "location of the wather", true},
+						{"date", "integer", "date MMDD as number", true},
+					}},
 				}
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
-					Model:    openaigo.GPT3_5Turbo_0613,
-					Messages: conversation,
-					Functions: []openaigo.Function{
-						{
-							Name:        "get_weather",
-							Description: "A function to get weather information",
-							Parameters: openaigo.Parameters{
-								Type: "object",
-								Properties: map[string]map[string]any{
-									"location": {"type": "string"},
-									"date":     {"type": "string", "description": "ISO 8601 date string"},
-								},
-								Required: []string{"location"},
-							},
-						},
-					},
+					Model:     openaigo.GPT3_5Turbo_0613,
+					Messages:  conversation,
+					Functions: funcs,
 				}
-				res0, err := client.Chat(nil, request)
-				conversation = append(conversation, res0.Choices[0].Message)
-				conversation = append(conversation, openaigo.Message{
-					Role:    "function",
-					Name:    "get_weather",
-					Content: "20%:thunderstorm,70%:sandstorm,10%:snowy",
-				})
+				res_1, err := client.Chat(nil, request)
+				if err != nil {
+					return nil, err
+				}
+				conversation = append(conversation, res_1.Choices[0].Message)
+				if res_1.Choices[0].Message.FunctionCall != nil {
+					fmt.Printf("%+v\n", res_1.Choices[0].Message.FunctionCall)
+					conversation = append(conversation, openaigo.Message{
+						Role:    "function",
+						Name:    res_1.Choices[0].Message.FunctionCall.Name(),
+						Content: funcs.Call(res_1.Choices[0].Message.FunctionCall),
+					})
+				}
 				request.Messages = conversation
-				res, err := client.Chat(nil, request)
-				return res, err
+				res_2, err := client.Chat(nil, request)
+				if err != nil {
+					return nil, err
+				}
+				conversation = append(conversation, res_2.Choices[0].Message)
+				if res_2.Choices[0].Message.FunctionCall != nil {
+					fmt.Printf("%+v\n", res_2.Choices[0].Message.FunctionCall)
+					conversation = append(conversation, openaigo.Message{
+						Role:    "function",
+						Name:    res_2.Choices[0].Message.FunctionCall.Name(),
+						Content: funcs.Call(res_2.Choices[0].Message.FunctionCall),
+					})
+				}
+				request.Messages = conversation
+				res_3, err := client.Chat(nil, request)
+				return res_3, err
 			},
 		},
 	}

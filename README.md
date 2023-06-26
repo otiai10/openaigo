@@ -117,6 +117,19 @@ request := openaigo.ChatRequest{
 }
 ```
 
+if you want **shorthand**, use [`functioncall`](https://pkg.go.dev/github.com/otiai10/openaigo@v1.4.0/functioncall).
+
+```go
+import fc "github.com/otiai10/openaigo/functioncall"
+
+request.Functions = fc.Funcs{
+  "get_weather": {GetWeather, "Get weather of the location", fc.Params{
+    {"location", "string", "location of the weather", true},
+    {"date", "string", "ISO 8601 date string", true},
+  }},
+}
+```
+
 See [test app](https://github.com/otiai10/openaigo/blob/main/testapp/main.go) as a working example.
 
 # Need `stream`?
