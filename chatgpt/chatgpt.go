@@ -141,3 +141,10 @@ func Func(name string, data interface{}) Message {
 		Content: fmt.Sprintf("%+v\n", data),
 	}
 }
+
+func System(message string) Message {
+	return Message{
+		Role:    "system",
+		Content: message,
+	}
+}
