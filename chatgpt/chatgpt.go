@@ -188,3 +188,12 @@ func System(message string) Message {
 		},
 	}
 }
+
+func Assistant(message string) Message {
+	return Message{
+		Message: openaigo.Message{
+			Role:    "assistant",
+			Content: message,
+		},
+	}
+}
