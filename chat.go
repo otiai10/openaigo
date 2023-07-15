@@ -86,7 +86,7 @@ type ChatCompletionRequestBody struct {
 	Functions json.Marshaler `json:"functions,omitempty"`
 
 	// FunctionCall: You ain't need it. Default is "auto".
-	FunctionCall string `json:"function_call,omitempty"`
+	FunctionCall json.RawMessage `json:"function_call,omitempty"`
 }
 
 type Functions []Function
