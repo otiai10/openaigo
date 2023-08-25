@@ -1,0 +1,20 @@
+{
+    "object": "fine_tuning.job",
+    "id": "ft-zRdUkP4QeZqeYjDcQL0wwam1",
+    "model": "davinci-002",
+    "created_at": 1692661014,
+    "finished_at": 1692661190,
+    "fine_tuned_model": "ft:davinci-002:my-org:custom_suffix:7q8mpxmy",
+    "organization_id": "org-123",
+    "result_files": [
+        "file-abc123"
+    ],
+    "status": "succeeded",
+    "validation_file": null,
+    "training_file": "file-abc123",
+    "hyperparameters": {
+        "n_epochs": 4
+    },
+    "trained_tokens": 5768
+  }
+  
