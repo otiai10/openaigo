@@ -281,6 +281,54 @@ func testserverV1() *httptest.Server {
 			io.Copy(w, f)
 		}
 	})
+	mux.HandleFunc("/fine_tuning/jobs", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, err := os.Open("./testdata/finetuning-create.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine_tuning/jobs/abcdefghi/cancel", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodPost:
+			f, err := os.Open("./testdata/finetuning-cancel.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine_tuning/jobs/abcdefghi", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetuning-retrieve.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
+	mux.HandleFunc("/fine_tuning/jobs/abcdefghi/events", func(w http.ResponseWriter, req *http.Request) {
+		switch req.Method {
+		case http.MethodGet:
+			f, err := os.Open("./testdata/finetuning-event-list.json")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			defer f.Close()
+			io.Copy(w, f)
+		}
+	})
 	mux.HandleFunc("/chat/completions", func(w http.ResponseWriter, req *http.Request) {
 		f, err := os.Open("./testdata/chat-completion.json")
 		if err != nil {

@@ -141,51 +141,57 @@ func (client *Client) CreateModeration(ctx context.Context, body ModerationCreat
 }
 
 // CreateFineTune: POST https://api.openai.com/v1/fine-tunes
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // Creates a job that fine-tunes a specified model from a given dataset.
 // Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
-// Learn more about Fine-tuning: https://beta.openai.com/docs/guides/fine-tuning
-// See https://beta.openai.com/docs/api-reference/fine-tunes/create
+// Learn more about Fine-tuning: https://platform.openai.com/docs/api-reference/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tunes/create
 func (client *Client) CreateFineTune(ctx context.Context, body FineTuneCreateRequestBody) (resp FineTuneCreateResponse, err error) {
 	p := "/fine-tunes"
 	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
 
 // ListFineTunes: GET https://api.openai.com/v1/fine-tunes
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // List your organization's fine-tuning jobs.
-// See https://beta.openai.com/docs/api-reference/fine-tunes/list
+// See https://platform.openai.com/docs/api-reference/fine-tunes/list
 func (client *Client) ListFineTunes(ctx context.Context) (resp FineTuneListResponse, err error) {
 	p := "/fine-tunes"
 	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // RetrieveFineTune: GET https://api.openai.com/v1/fine-tunes/{fine_tune_id}
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // Gets info about the fine-tune job.
-// Learn more about Fine-tuning https://beta.openai.com/docs/guides/fine-tuning
-// See https://beta.openai.com/docs/api-reference/fine-tunes/retrieve
+// Learn more about Fine-tuning https://platform.openai.com/docs/api-reference/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tunes/retrieve
 func (client *Client) RetrieveFineTune(ctx context.Context, id string) (resp FineTuneRetrieveResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s", id)
 	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // CancelFineTune: POST https://api.openai.com/v1/fine-tunes/{fine_tune_id}/cancel
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // Immediately cancel a fine-tune job.
-// See https://beta.openai.com/docs/api-reference/fine-tunes/cancel
+// See https://platform.openai.com/docs/api-reference/fine-tunes/cancel
 func (client *Client) CancelFineTune(ctx context.Context, id string) (resp FineTuneCancelResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s/cancel", id)
 	return call(ctx, client, http.MethodPost, p, nil, resp, nil)
 }
 
 // ListFineTuneEvents: GET https://api.openai.com/v1/fine-tunes/{fine_tune_id}/events
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // Get fine-grained status updates for a fine-tune job.
-// See https://beta.openai.com/docs/api-reference/fine-tunes/events
+// See https://platform.openai.com/docs/api-reference/fine-tunes/events
 func (client *Client) ListFineTuneEvents(ctx context.Context, id string) (resp FineTuneListEventsResponse, err error) {
 	p := fmt.Sprintf("/fine-tunes/%s/events", id)
 	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
 
 // DeleteFineTuneModel: DELETE https://api.openai.com/v1/models/{model}
+// Deprecated: you should consider using the updating fine-tuning API https://platform.openai.com/docs/guides/fine-tuning
 // Delete a fine-tuned model. You must have the Owner role in your organization.
-// See https://beta.openai.com/docs/api-reference/fine-tunes/delete-model
+// See https://platform.openai.com/docs/api-reference/fine-tunes/delete-model
 func (client *Client) DeleteFineTuneModel(ctx context.Context, id string) (resp FineTuneDeleteModelResponse, err error) {
 	p := fmt.Sprintf("/models/%s", id)
 	return call(ctx, client, http.MethodDelete, p, nil, resp, nil)
@@ -207,4 +213,41 @@ func (client *Client) ChatCompletion(ctx context.Context, body ChatCompletionReq
 		return call(ctx, client, http.MethodPost, p, body, resp, body.StreamCallback)
 	}
 	return call(ctx, client, http.MethodPost, p, body, resp, nil)
+}
+
+// CreateFineTuning: POST https://api.openai.com/v1/fine_tuning/jobs
+// Creates a job that fine-tunes a specified model from a given dataset.
+// Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
+// Learn more about Fine-tuning: https://platform.openai.com/docs/guides/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tuning/create
+func (client *Client) CreateFineTuning(ctx context.Context, body FineTuningCreateRequestBody) (resp FineTuningJob, err error) {
+	p := "/fine_tuning/jobs"
+	return call(ctx, client, http.MethodPost, p, body, resp, nil)
+}
+
+// CancelFineTuning: POST https://api.openai.com/v1/fine_tuning/{fine_tuning_job_id}/cancel
+// Immediately cancel a fine tuning job.
+// Learn more about Fine-tuning  https://platform.openai.com/docs/guides/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tuning/cancel
+func (client *Client) CancelFineTuning(ctx context.Context, id string) (resp FineTuningJob, err error) {
+	p := "/fine_tuning/jobs/" + id + "/cancel"
+	return call(ctx, client, http.MethodPost, p, nil, resp, nil)
+}
+
+// RetrieveFineTuning: GET https://api.openai.com/v1/fine_tuning/jobs//{fine_tuning_job_id}
+// Gets info about the fine-tuning job.
+// Learn more about Fine-tuning  https://platform.openai.com/docs/guides/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tuning/retrieve
+func (client *Client) RetrieveFineTuning(ctx context.Context, id string) (resp FineTuningJob, err error) {
+	p := fmt.Sprintf("/fine_tuning/jobs/%s", id)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
+}
+
+// ListFineTuningEvents: GET https://api.openai.com/v1/fine_tuning/jobs/{fine_tuning_job_id}/events
+// Get fine-grained status updates for a fine-tuning job.
+// Learn more about Fine-tuning  https://platform.openai.com/docs/guides/fine-tuning
+// See https://platform.openai.com/docs/api-reference/fine-tuning/list-events
+func (client *Client) ListFineTuningEvents(ctx context.Context, id string) (resp FineTuningListEventsResponse, err error) {
+	p := fmt.Sprintf("/fine_tuning/jobs/%s/events", id)
+	return call(ctx, client, http.MethodGet, p, nil, resp, nil)
 }
