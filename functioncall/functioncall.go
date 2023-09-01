@@ -20,6 +20,7 @@ type Param struct {
 	Description string `json:"description,omitempty"`
 	Required    bool   `json:"-"`
 	// Enum        []any  `json:"enum,omitempty"`
+	Items Params `json:",omitempty"`
 }
 
 func (funcs Funcs) MarshalJSON() ([]byte, error) {
@@ -38,12 +39,21 @@ func (funcs Funcs) MarshalJSON() ([]byte, error) {
 
 func (params Params) MarshalJSON() ([]byte, error) {
 	required := []string{}
-	props := map[string]Param{}
+	props := map[string]any{}
 	for _, p := range params {
 		if p.Required {
 			required = append(required, p.Name)
 		}
-		props[p.Name] = p
+		if p.Type == "array" && p.Items != nil {
+			schema := map[string]any{
+				"type":     "array",
+				"items":    p.Items,
+				"required": required,
+			}
+			props[p.Name] = schema
+		} else {
+			props[p.Name] = p
+		}
 	}
 	schema := map[string]any{
 		"type":       "object",
