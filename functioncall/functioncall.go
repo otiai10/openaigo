@@ -13,7 +13,9 @@ type Func struct {
 }
 
 type Params []Param
+
 type NestedParams []Param
+
 type Param struct {
 	Name        string `json:"-"`
 	Type        string `json:"type,omitempty"`
@@ -42,7 +44,6 @@ func (params Params) MarshalJSON() ([]byte, error) {
 }
 
 func (params NestedParams) MarshalJSON() ([]byte, error) {
-
 	if len(params) == 1 {
 		return json.Marshal(params[0])
 	}
@@ -50,7 +51,7 @@ func (params NestedParams) MarshalJSON() ([]byte, error) {
 	return marshalObject(params)
 }
 
-func marshalObject[T Params | NestedParams](params T) ([]byte, error) {
+func marshalObject[T ~[]Param](params T) ([]byte, error) {
 	required := []string{}
 	props := map[string]Param{}
 	for _, p := range params {
@@ -58,7 +59,6 @@ func marshalObject[T Params | NestedParams](params T) ([]byte, error) {
 			required = append(required, p.Name)
 		}
 		props[p.Name] = p
-
 	}
 
 	schema := map[string]any{
