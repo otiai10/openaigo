@@ -52,7 +52,7 @@ func (params NestedParams) MarshalJSON() ([]byte, error) {
 
 func marshalObject[T Params | NestedParams](params T) ([]byte, error) {
 	required := []string{}
-	props := map[string]any{}
+	props := map[string]Param{}
 	for _, p := range params {
 		if p.Required {
 			required = append(required, p.Name)
