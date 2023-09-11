@@ -14,12 +14,15 @@ type Func struct {
 
 type Params []Param
 
+type NestedParams []Param
+
 type Param struct {
 	Name        string `json:"-"`
 	Type        string `json:"type,omitempty"`
 	Description string `json:"description,omitempty"`
 	Required    bool   `json:"-"`
 	// Enum        []any  `json:"enum,omitempty"`
+	Items NestedParams `json:",omitempty"`
 }
 
 func (funcs Funcs) MarshalJSON() ([]byte, error) {
@@ -37,6 +40,18 @@ func (funcs Funcs) MarshalJSON() ([]byte, error) {
 }
 
 func (params Params) MarshalJSON() ([]byte, error) {
+	return marshalObject(params)
+}
+
+func (params NestedParams) MarshalJSON() ([]byte, error) {
+	if len(params) == 1 {
+		return json.Marshal(params[0])
+	}
+
+	return marshalObject(params)
+}
+
+func marshalObject[T ~[]Param](params T) ([]byte, error) {
 	required := []string{}
 	props := map[string]Param{}
 	for _, p := range params {
@@ -45,12 +60,32 @@ func (params Params) MarshalJSON() ([]byte, error) {
 		}
 		props[p.Name] = p
 	}
+
 	schema := map[string]any{
 		"type":       "object",
 		"properties": props,
 		"required":   required,
 	}
 	return json.Marshal(schema)
+}
+
+func (param Param) MarshalJSON() ([]byte, error) {
+	switch param.Type {
+	case "array":
+		schema := map[string]any{
+			"type":  "array",
+			"items": param.Items,
+		}
+		if param.Description != "" {
+			schema["description"] = param.Description
+		}
+		return json.Marshal(schema)
+	case "object":
+		return marshalObject(param.Items)
+	default:
+		type Alias Param
+		return json.Marshal(Alias(param))
+	}
 }
 
 func As[T any](funcs Funcs) (dest T) {
