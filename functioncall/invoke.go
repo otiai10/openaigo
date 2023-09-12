@@ -12,14 +12,14 @@ type Invocation interface {
 }
 
 func (funcs Funcs) Call(invocation Invocation) string {
-	b, err := json.Marshal(funcs.Invoke(invocation))
+	b, err := json.Marshal(funcs.invoke(invocation))
 	if err != nil {
 		return err.Error()
 	}
 	return string(b)
 }
 
-func (funcs Funcs) Invoke(invocation Invocation) any {
+func (funcs Funcs) invoke(invocation Invocation) any {
 	f, ok := funcs[invocation.Name()]
 	if !ok {
 		return fmt.Sprintf("function not found: %s", invocation.Name())

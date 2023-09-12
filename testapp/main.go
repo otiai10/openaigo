@@ -156,8 +156,8 @@ var (
 				funcs := fc.Funcs{
 					"GetDate": fc.Func{GetDate, "A function to get date today", fc.Params{}},
 					"GetWeather": fc.Func{GetWeather, "A function to get weather information", fc.Params{
-						{"location", "string", "location of the wather", true},
-						{"date", "integer", "date MMDD as number", true},
+						{"location", "string", "location of the wather", true, nil},
+						{"date", "integer", "date MMDD as number", true, nil},
 					}},
 				}
 				client := openaigo.NewClient(OPENAI_API_KEY)
