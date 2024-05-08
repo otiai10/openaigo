@@ -39,7 +39,7 @@ var (
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.CompletionRequestBody{
-					Model:  openaigo.TextDavinci003,
+					Model:  openaigo.GPT3_5Turbo_Instruct,
 					Prompt: []string{"Say this is a test"},
 				}
 				return client.Completion(nil, request)

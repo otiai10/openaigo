@@ -35,20 +35,6 @@ type ModelRetrieveResponse ModelData
 
 // https://beta.openai.com/docs/models/overview
 const (
-	// {{{ https://beta.openai.com/docs/models/gpt-3
-	TextDavinci003 = "text-davinci-003"
-	TextCurie001   = "text-curie-001"
-	TextBabbage001 = "text-babbage-001"
-	TextAda001     = "text-ada-001"
-	// }}}
-
-	// {{{ https://platform.openai.com/docs/models/gpt-3-5
-	GPT3_5Turbo          = "gpt-3.5-turbo"
-	GPT3_5Turbo_0301     = "gpt-3.5-turbo-0301"
-	GPT3_5Turbo_0613     = "gpt-3.5-turbo-0613"
-	GPT3_5Turbo_16K      = "gpt-3.5-turbo-16k"
-	GPT3_5Turbo_16K_0613 = "gpt-3.5-turbo-16k-0613"
-	// }}}
 
 	// {{{ https://platform.openai.com/docs/models/gpt-4
 	GPT4          = "gpt-4"
@@ -57,5 +43,16 @@ const (
 	GPT4_32K      = "gpt-4-32k"
 	GPT4_32K_0314 = "gpt-4-32k-0314"
 	GPT4_32K_0613 = "gpt-4-32k-0613"
+	// }}}
+
+	// {{{ https://platform.openai.com/docs/models/gpt-3-5
+	GPT3_5Turbo_0125     = "gpt-3.5-turbo-0125"
+	GPT3_5Turbo          = "gpt-3.5-turbo"
+	GPT3_5Turbo_1106     = "gpt-3.5-turbo-1106"
+	GPT3_5Turbo_Instruct = "gpt-3.5-turbo-instruct"
+	GPT3_5Turbo_16K_0613 = "gpt-3.5-turbo-16k-0613" // @deprecated
+	GPT3_5Turbo_0613     = "gpt-3.5-turbo-0613"     // @deprecated
+	GPT3_5Turbo_16K      = "gpt-3.5-turbo-16k"      // @deprecated
+	GPT3_5Turbo_0301     = "gpt-3.5-turbo-0301"     // @deprecated
 	// }}}
 )
