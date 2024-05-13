@@ -31,7 +31,7 @@ import (
 func main() {
 	client := openaigo.NewClient(os.Getenv("OPENAI_API_KEY"))
 	request := openaigo.ChatRequest{
-		Model: "gpt-3.5-turbo",
+		Model: "gpt-4o",
 		Messages: []openaigo.Message{
 			{Role: "user", Content: "Hello!"},
 		},
