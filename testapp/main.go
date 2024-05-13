@@ -38,11 +38,13 @@ var (
 			Name: "completion",
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
-				request := openaigo.CompletionRequestBody{
-					Model:  openaigo.GPT3_5Turbo_Instruct,
-					Prompt: []string{"Say this is a test"},
+				request := openaigo.ChatCompletionRequestBody{
+					Model: openaigo.GPT4o,
+					Messages: []openaigo.Message{
+						{Role: "user", Content: "What is the capital of Japan?"},
+					},
 				}
-				return client.Completion(nil, request)
+				return client.ChatCompletion(nil, request)
 			},
 		},
 		{
@@ -84,7 +86,7 @@ var (
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
-					Model: openaigo.GPT3_5Turbo,
+					Model: openaigo.GPT4o,
 					Messages: []openaigo.Message{
 						{Role: "user", Content: "Hello!"},
 					},
@@ -98,7 +100,7 @@ var (
 			Run: func() (any, error) {
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
-					Model: openaigo.GPT4,
+					Model: openaigo.GPT4o,
 					Messages: []openaigo.Message{
 						{Role: "user", Content: "Who are you?"},
 					},
@@ -122,7 +124,7 @@ var (
 					}
 				}
 				request := openaigo.ChatCompletionRequestBody{
-					Model:          openaigo.GPT3_5Turbo_0613,
+					Model:          openaigo.GPT4o,
 					StreamCallback: calback,
 					Messages: []openaigo.Message{
 						{
@@ -162,7 +164,7 @@ var (
 				}
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
-					Model:     openaigo.GPT3_5Turbo_0613,
+					Model:     openaigo.GPT4o_20240513,
 					Messages:  conversation,
 					Functions: funcs,
 				}

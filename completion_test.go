@@ -9,7 +9,7 @@ import (
 func TestClient_Completion(t *testing.T) {
 	client := NewClient("")
 	client.BaseURL = mockserver.URL
-	res, err := client.Completion(nil, CompletionRequestBody{})
+	res, err := client.Completion_Legacy(nil, CompletionRequestBody{})
 	Expect(t, err).ToBe(nil)
 	Expect(t, res).TypeOf("openaigo.CompletionResponse")
 

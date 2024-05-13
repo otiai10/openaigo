@@ -22,7 +22,7 @@ func (funcs Funcs) Call(invocation Invocation) string {
 func (funcs Funcs) invoke(invocation Invocation) any {
 	f, ok := funcs[invocation.Name()]
 	if !ok {
-		return fmt.Sprintf("function not found: %s", invocation.Name())
+		return fmt.Sprintf("function not found: `%s`", invocation.Name())
 	}
 	v := reflect.ValueOf(f.Value)
 	if !v.IsValid() || v.IsZero() {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/otiai10/openaigo"
 	"github.com/otiai10/openaigo/functioncall"
 )
 
@@ -36,10 +37,10 @@ var funcs = functioncall.Funcs{
 func ExampleAI() {
 
 	key := os.Getenv("OPENAI_API_KEY")
-	ai := New(key, "gpt-4-0613")
+	ai := New(key, openaigo.GPT4o)
 	ai.Functions = funcs
 	conv := []Message{
-		User("Should I bring my umbrella tomorrow?"),
+		User("Should I bring my umbrella tomorrow? You can use functions to get necessary information."),
 	}
 	res, err := ai.Chat(context.Background(), conv)
 	if err != nil {
@@ -49,6 +50,7 @@ func ExampleAI() {
 		if i != 0 {
 			fmt.Print("->")
 		}
+		// fmt.Printf("%s (%s): %s\n", m.Role, m.Name, m.Content) // DEBUG
 		fmt.Printf("[%d]%s", i, m.Role)
 		continue
 		// fmt.Printf("[%d] ", i)

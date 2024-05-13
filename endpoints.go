@@ -26,7 +26,7 @@ func (client *Client) RetrieveModel(ctx context.Context, model string) (resp Mod
 // Completion: POST https://api.openai.com/v1/completions
 // Creates a completion for the provided prompt and parameters
 // See https://beta.openai.com/docs/api-reference/completions/create
-func (client *Client) Completion(ctx context.Context, body CompletionRequestBody) (resp CompletionResponse, err error) {
+func (client *Client) Completion_Legacy(ctx context.Context, body CompletionRequestBody) (resp CompletionResponse, err error) {
 	p := "/completions"
 	return call(ctx, client, http.MethodPost, p, body, resp, nil)
 }
